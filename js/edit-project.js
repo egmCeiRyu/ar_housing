@@ -204,12 +204,10 @@ async function saveProject() {
             .select()
             .single();
     } else {
-        result = await supabaseClient
-            .from("properties")
-            .update(projectData)
-            .eq("id", projectId)
-            .select()
-            .single();
+    result = await supabaseClient
+        .from("properties")
+        .update(projectData)
+        .eq("id", projectId);
     }
 
     if (result.error) {
