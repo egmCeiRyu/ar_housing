@@ -206,5 +206,32 @@
     }
 }
 
+.drop-zone {
+    border: 2px dashed #b8c4d6;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 12px 0 18px;
+    text-align: center;
+    background: #f8fbff;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+    background: #eef6ff;
+    border-color: #4a90e2;
+}
+
+.drop-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.drop-text {
+    font-size: 13px;
+    color: #667085;
+}
+
 
 

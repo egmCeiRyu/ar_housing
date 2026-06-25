@@ -390,7 +390,7 @@ async function handleProjectFile(file, type) {
         }
 
         fileType = "glb";
-        inputId = "glb_url";
+        inputId = "glbUrl";
     }
 
     if (type === "thumbnail") {
@@ -400,7 +400,7 @@ async function handleProjectFile(file, type) {
         }
 
         fileType = "thumbnail";
-        inputId = "thumbnail_url";
+        inputId = "thumbnailUrl";
     }
 
     try {
