@@ -8,6 +8,11 @@ if (!isAdmin) {
 
 }
 
+console.log(
+    "ADMIN VALUE:",
+    sessionStorage.getItem("admin")
+);
+
 let editingClientId = null;
 
 const clientForm =
