@@ -324,3 +324,68 @@ function openQrPage() {
     );
 }
 
+setupDropZone("glbDropZone", "glbFileInput", "glb");
+setupDropZone("thumbDropZone", "thumbFileInput", "thumbnail");
+
+function setupDropZone(zoneId, inputId, type) {
+
+    const zone = document.getElementById(zoneId);
+    const input = document.getElementById(inputId);
+
+    zone.addEventListener("click", () => {
+        input.click();
+    });
+
+    zone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        zone.classList.add("drag-over");
+    });
+
+    zone.addEventListener("dragleave", () => {
+        zone.classList.remove("drag-over");
+    });
+
+    zone.addEventListener("drop", async (event) => {
+        event.preventDefault();
+        zone.classList.remove("drag-over");
+
+        const file = event.dataTransfer.files[0];
+
+        if (!file) return;
+
+        await handleProjectFile(file, type);
+    });
+
+    input.addEventListener("change", async () => {
+        const file = input.files[0];
+
+        if (!file) return;
+
+        await handleProjectFile(file, type);
+    });
+}
+
+async function handleProjectFile(file, type) {
+
+    console.log("Selected file:", file);
+
+    if (type === "glb") {
+        if (!file.name.toLowerCase().endsWith(".glb")) {
+            alert("GLBファイルを選択してください。");
+            return;
+        }
+
+        document.getElementById("glb_url").value = file.name;
+    }
+
+    if (type === "thumbnail") {
+        if (!file.type.startsWith("image/")) {
+            alert("画像ファイルを選択してください。");
+            return;
+        }
+
+        document.getElementById("thumbnail_url").value = file.name;
+    }
+
+    alert("ファイルが選択されました。次にアップロード処理を接続します。");
+}

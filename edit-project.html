@@ -50,15 +50,17 @@ content="width=device-width,initial-scale=1">
 
     <input id="glbUrl">
 
-    <label>
-        Thumbnail URL
-    </label>
+    <div class="drop-zone" id="glbDropZone">
+        <div class="drop-title">GLBファイルをアップロード</div>
+        <div class="drop-text">ここにGLBファイルをドラッグ＆ドロップ</div>
+        <input type="file" id="glbFileInput" accept=".glb" hidden>
+    </div>
 
-    <input id="thumbnailUrl">
-
-    <label>
-    Editable Material
-</label>
+    <div class="drop-zone" id="thumbDropZone">
+        <div class="drop-title">サムネイルをアップロード</div>
+        <div class="drop-text">ここに画像をドラッグ＆ドロップ</div>
+        <input type="file" id="thumbFileInput" accept="image/*" hidden>
+    </div>
 
 <select id="editableMaterial">
 
