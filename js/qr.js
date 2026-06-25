@@ -1,5 +1,4 @@
-const VIEWER_URL =
-`${window.location.origin}/ar.html`;
+
 
 const isAdmin =
 sessionStorage.getItem("admin") === "true";
