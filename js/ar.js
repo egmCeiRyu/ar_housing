@@ -5,6 +5,7 @@ const selectedColor = params.get("color");
 
 const viewer = document.getElementById("viewer");
 const loading = document.getElementById("loading");
+const customArButton = document.getElementById("customArButton");
 
 let currentProject = null;
 let currentSessionId = null;
@@ -46,7 +47,6 @@ async function loadAR() {
     currentProject = project;
 
     await loadColorButtons(project.id);
-
     await savePageView(project.id);
     await startARSession(project.id);
 
@@ -64,7 +64,6 @@ async function loadAR() {
                 selectedColor
             );
         }
-
     });
 }
 
@@ -92,7 +91,7 @@ async function startARSession(propertyId) {
 
     sessionStartedAt = new Date();
 
-    const { error } = await supabaseClient
+    const { data, error } = await supabaseClient
         .from("ar_sessions")
         .insert({
             property_id: propertyId,
@@ -100,11 +99,16 @@ async function startARSession(propertyId) {
             browser: info.browser,
             os: info.os,
             started_at: sessionStartedAt.toISOString()
-        });
+        })
+        .select("id")
+        .single();
 
     if (error) {
         console.error("AR session start error:", error);
+        return;
     }
+
+    currentSessionId = data.id;
 }
 
 async function endARSession() {
@@ -126,7 +130,7 @@ async function endARSession() {
         .from("ar_sessions")
         .update({
             ended_at: endedAt.toISOString(),
-            duration: duration
+            duration_seconds: duration
         })
         .eq("id", currentSessionId);
 
@@ -155,17 +159,13 @@ function getDeviceInfo() {
 
     if (/Edg/i.test(ua)) {
         browser = "Edge";
-    }
-    else if (/CriOS/i.test(ua)) {
+    } else if (/CriOS/i.test(ua)) {
         browser = "Chrome iOS";
-    }
-    else if (/Chrome/i.test(ua)) {
+    } else if (/Chrome/i.test(ua)) {
         browser = "Chrome";
-    }
-    else if (/Safari/i.test(ua)) {
+    } else if (/Safari/i.test(ua)) {
         browser = "Safari";
-    }
-    else if (/Firefox/i.test(ua)) {
+    } else if (/Firefox/i.test(ua)) {
         browser = "Firefox";
     }
 
@@ -196,14 +196,9 @@ function validateMaterials() {
     console.log("Found materials:", foundMaterials);
 
     if (missingMaterials.length > 0) {
-        console.warn(
-            "Materiais faltando:",
-            missingMaterials
-        );
+        console.warn("Materiais faltando:", missingMaterials);
     } else {
-        console.log(
-            "Todos os materiais encontrados."
-        );
+        console.log("Todos os materiais encontrados.");
     }
 }
 
@@ -219,10 +214,7 @@ function applyMaterialColor(materialName, colorCode) {
         model.getMaterialByName(materialName);
 
     if (!material) {
-        console.warn(
-            "Material not found:",
-            materialName
-        );
+        console.warn("Material not found:", materialName);
         return;
     }
 
@@ -248,29 +240,16 @@ function hexToRgb(hex) {
     };
 }
 
-window.addEventListener("pagehide", endARSession);
-
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") {
-        endARSession();
-    }
-});
-
-document.getElementById("customArButton").addEventListener("click", () => {
-    viewer.activateAR();
-});
-
-
-async function loadColorButtons(projectId){
+async function loadColorButtons(projectId) {
 
     const { data, error } =
-    await supabaseClient
-        .from("project_colors")
-        .select("*")
-        .eq("property_id", projectId)
-        .order("created_at");
+        await supabaseClient
+            .from("project_colors")
+            .select("*")
+            .eq("property_id", projectId)
+            .order("created_at");
 
-    if(error){
+    if (error) {
         console.error(error);
         return;
     }
@@ -278,7 +257,7 @@ async function loadColorButtons(projectId){
     renderColorButtons(data || []);
 }
 
-function renderColorButtons(colors){
+function renderColorButtons(colors) {
 
     const bar =
         document.getElementById("colorBar");
@@ -291,19 +270,19 @@ function renderColorButtons(colors){
                 class="color-dot"
                 style="background:${color.color_code}"
                 title="${color.color_name}"
-                onclick="selectViewerColor('${color.color_code}', this)"
+                onclick="selectViewerColor('${color.color_code}', this)">
             </button>
         `;
     });
 }
 
-function selectViewerColor(colorCode, button){
+function selectViewerColor(colorCode, button) {
 
-    if(!currentProject){
+    if (!currentProject) {
         return;
     }
 
-    if(!currentProject.editable_material){
+    if (!currentProject.editable_material) {
         return;
     }
 
@@ -321,3 +300,25 @@ function selectViewerColor(colorCode, button){
     button.classList.add("active");
 }
 
+customArButton.addEventListener("click", async () => {
+
+    if (!viewer.src) {
+        console.warn("Model source not loaded yet");
+        return;
+    }
+
+    try {
+        await viewer.activateAR();
+    } catch (error) {
+        console.error("AR activation failed:", error);
+        alert("ARを起動できませんでした。");
+    }
+});
+
+window.addEventListener("pagehide", endARSession);
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+        endARSession();
+    }
+});
