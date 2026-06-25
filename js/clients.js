@@ -1,10 +1,10 @@
 const isAdmin =
-sessionStorage.getItem("admin");
+sessionStorage.getItem("admin") === "true";
 
-if (isAdmin !== "true") {
+if (!isAdmin) {
 
     window.location.href =
-    "admin-login.html";
+    `${BASE_PATH}/admin-login.html`;
 
 }
 
