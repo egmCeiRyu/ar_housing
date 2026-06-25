@@ -1,3 +1,52 @@
+setupDropZone("glbDropZone", "glbFileInput", "glb");
+setupDropZone("thumbDropZone", "thumbFileInput", "thumbnail");
+
+function setupDropZone(zoneId, inputId, type) {
+
+    const zone = document.getElementById(zoneId);
+    const input = document.getElementById(inputId);
+
+    zone.addEventListener("click", () => {
+        input.click();
+    });
+
+    zone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        zone.classList.add("drag-over");
+    });
+
+    zone.addEventListener("dragleave", () => {
+        zone.classList.remove("drag-over");
+    });
+
+    zone.addEventListener("drop", async (event) => {
+        event.preventDefault();
+        zone.classList.remove("drag-over");
+
+        const file = event.dataTransfer.files[0];
+
+        if (!file) return;
+
+        await handleProjectFile(file, type);
+    });
+
+    input.addEventListener("change", async () => {
+        const file = input.files[0];
+
+        if (!file) return;
+
+        await handleProjectFile(file, type);
+    });
+}
+
+window.addEventListener("dragover", (event) => {
+    event.preventDefault();
+});
+
+window.addEventListener("drop", (event) => {
+    event.preventDefault();
+});
+
 const isAdmin =
 sessionStorage.getItem("admin");
 
@@ -324,46 +373,7 @@ function openQrPage() {
     );
 }
 
-setupDropZone("glbDropZone", "glbFileInput", "glb");
-setupDropZone("thumbDropZone", "thumbFileInput", "thumbnail");
 
-function setupDropZone(zoneId, inputId, type) {
-
-    const zone = document.getElementById(zoneId);
-    const input = document.getElementById(inputId);
-
-    zone.addEventListener("click", () => {
-        input.click();
-    });
-
-    zone.addEventListener("dragover", (event) => {
-        event.preventDefault();
-        zone.classList.add("drag-over");
-    });
-
-    zone.addEventListener("dragleave", () => {
-        zone.classList.remove("drag-over");
-    });
-
-    zone.addEventListener("drop", async (event) => {
-        event.preventDefault();
-        zone.classList.remove("drag-over");
-
-        const file = event.dataTransfer.files[0];
-
-        if (!file) return;
-
-        await handleProjectFile(file, type);
-    });
-
-    input.addEventListener("change", async () => {
-        const file = input.files[0];
-
-        if (!file) return;
-
-        await handleProjectFile(file, type);
-    });
-}
 
 async function handleProjectFile(file, type) {
 
@@ -437,3 +447,4 @@ async function handleProjectFile(file, type) {
         alert("アップロード中にエラーが発生しました。");
     }
 }
+
