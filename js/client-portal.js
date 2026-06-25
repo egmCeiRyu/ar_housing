@@ -1,3 +1,6 @@
+const isAdmin =
+sessionStorage.getItem("admin") === "true";
+
 const params =
 new URLSearchParams(window.location.search);
 
