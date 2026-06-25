@@ -50,19 +50,24 @@ async function login(){
 
     }
 
-    sessionStorage.setItem(
-        "admin",
-        "true"
-    );
+sessionStorage.setItem(
+    "admin",
+    "true"
+);
 
-    sessionStorage.setItem(
-        "admin_id",
-        data.id
-    );
+sessionStorage.setItem(
+    "admin_id",
+    data.id
+);
 
-    alert("LOGIN OK");
+console.log("admin =", sessionStorage.getItem("admin"));
+console.log("admin_id =", sessionStorage.getItem("admin_id"));
+console.log("redirect =", `${BASE_PATH}/index.html`);
 
-    window.location.href =
-    "index.html";
+// Pare aqui para depuração
+debugger;
+
+// Só continua quando você clicar Resume (F8) no DevTools
+window.location.href = `${BASE_PATH}/index.html`;
 
 }
