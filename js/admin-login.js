@@ -60,6 +60,8 @@ async function login(){
         data.id
     );
 
+    alert("LOGIN OK");
+
     window.location.href =
     "index.html";
 
