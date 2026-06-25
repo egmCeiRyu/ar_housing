@@ -3,8 +3,6 @@
 
 <head>
 
-    <link rel="stylesheet" href="home.css">
-
     <meta charset="UTF-8">
 
     <meta
@@ -13,35 +11,94 @@
 
     <title>AR Housing</title>
 
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/home.css">
+
 </head>
 
 <body>
 
-    <h1>
+<div class="home-page">
 
-        AR Housing
+    <div class="home-card">
 
-    </h1>
+        <div class="logo">
 
-    <button
-        onclick="
-        location.href=
-        'admin-login.html'
-        ">
+            🏠
 
-        管理者
+        </div>
 
-    </button>
+        <div class="page-label">
 
-    <button
-        onclick="
-        location.href=
-        'client-login.html'
-        ">
+            AR Housing
 
-        お客様
+        </div>
 
-    </button>
+        <h1>
+
+            管理システム
+
+        </h1>
+
+        <p class="subtitle">
+
+            管理者またはお客様としてログインしてください。
+
+        </p>
+
+        <button
+            class="menu-btn admin-btn"
+            onclick="
+            location.href=
+            'admin-login.html'
+            ">
+
+            <div>
+
+                <span class="btn-title">
+
+                    管理者
+
+                </span>
+
+                <span class="btn-sub">
+
+                    管理画面へログイン
+
+                </span>
+
+            </div>
+
+        </button>
+
+        <button
+            class="menu-btn client-btn"
+            onclick="
+            location.href=
+            'client-login.html'
+            ">
+
+            <div>
+
+                <span class="btn-title">
+
+                    お客様
+
+                </span>
+
+                <span class="btn-sub">
+
+                    QR・分析を確認
+
+                </span>
+
+            </div>
+
+        </button>
+
+    </div>
+
+</div>
 
 </body>
 
