@@ -60,6 +60,15 @@ async function login(){
         data.id
     );
 
+    sessionStorage.setItem("admin","true");
+
+    console.log(
+        sessionStorage.getItem("admin")
+    );
+
+    window.location.href =
+    `${BASE_PATH}/index.html`;
+
     window.location.href =
     `${BASE_PATH}/index.html`;
 
