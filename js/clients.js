@@ -1,3 +1,10 @@
+
+alert(
+    "ADMIN VALUE: " +
+    sessionStorage.getItem("admin")
+);
+
+
 const isAdmin =
 sessionStorage.getItem("admin") === "true";
 
