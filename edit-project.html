@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>Edit Project</title>
+
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/project.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/supabase.js"></script>
+<script defer src="js/edit-project.js"></script>
+
+</head>
+
+<body>
+<main class="app-page analytics-page">
+    <button
+        class="back-btn"
+        onclick="history.back()">
+        ←
+    </button>
+
+<header class="header">
+
+    <div class="project-header">
+        <h1 class="title-project">
+            プロジェクト設定
+        </h1>
+    </div>
+
+</header>
+
+<div class="form-card">
+
+    <label>
+        Project Name
+    </label>
+
+    <input id="name">
+
+    <label>
+        GLB URL
+    </label>
+
+    <input id="glbUrl">
+
+    <label>
+        Thumbnail URL
+    </label>
+
+    <input id="thumbnailUrl">
+
+    <label>
+    Editable Material
+</label>
+
+<select id="editableMaterial">
+
+    <option value="">
+        Select Material
+    </option>
+
+    <option value="wallpaint">
+        Wall Paint
+    </option>
+
+    <option value="wood">
+        Wood
+    </option>
+
+    <option value="metal">
+        Metal
+    </option>
+
+    <option value="glass">
+        Glass
+    </option>
+
+    <option value="roof">
+        Roof
+    </option>
+
+    <option value="window">
+        Window
+    </option>
+
+    <option value="door">
+        Door
+    </option>
+
+</select>
+
+    <label>
+        Status
+    </label>
+
+    <select id="status">
+
+        <option value="active">
+            Active
+        </option>
+
+        <option value="inactive">
+            Inactive
+        </option>
+
+    </select>
+
+    <button id="saveBtn">
+        Save
+    </button>
+
+</div>
+
+<div class="form-card" id="colors">
+
+    <h2>Colors</h2>
+
+    <label>Color Name</label>
+    <input id="colorName" placeholder="White">
+
+    <label>Color</label>
+
+    <div class="color-row">
+
+        <input
+            type="color"
+            id="colorPicker"
+            value="#ffffff">
+
+        <input
+            type="text"
+            id="colorHex"
+            value="#FFFFFF">
+
+    </div>
+
+    <button id="addColorBtn">
+        Add Color
+    </button>
+
+    <div id="colorList"></div>
+
+</div>
+
+</main>
+
+</body>
+</html>

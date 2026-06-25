@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>AR Viewer</title>
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+<link rel="stylesheet" href="css/ar.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script defer src="js/ar.js"></script>
+
+</head>
+
+<body>
+
+<div id="loading">
+    読み込み中...
+</div>
+
+<model-viewer
+    id="viewer"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    camera-controls
+    auto-rotate
+    shadow-intensity="1"
+    exposure="1">
+</model-viewer>
+
+<button id="customArButton">
+    AR
+</button>
+
+
+<div id="colorBar"></div>
+
+</body>
+</html>

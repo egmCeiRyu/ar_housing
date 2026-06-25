@@ -1,0 +1,119 @@
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:#f5f7fb;
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.app-page{
+    max-width:820px;
+    margin:0 auto;
+    padding:32px 20px 60px;
+}
+
+.back-btn{
+    position:fixed;
+    top:24px;
+    left:calc(50% - 410px - 64px);
+
+    width:44px;
+    height:44px;
+
+    border:none;
+    border-radius:999px;
+
+    background:#fff;
+    box-shadow:0 4px 14px rgba(15,23,42,.14);
+
+    cursor:pointer;
+    z-index:9999;
+}
+
+@media(max-width:900px){
+    .app-page{
+        padding:20px 14px 40px;
+    }
+
+    .back-btn{
+        top:16px;
+        left:16px;
+    }
+}
+
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:20px;
+
+    background:#fff;
+
+    border-bottom:
+    1px solid #e5e7eb;
+}
+
+.header h1{
+    margin:0;
+    font-size:20px;
+    padding-left:50px;
+}
+
+.back-btn{
+    position:fixed;
+
+    top:24px;
+    left:calc(50% - 410px + 16px);
+
+    width:44px;
+    height:44px;
+
+    border:none;
+    border-radius:999px;
+
+    background:#fff;
+
+    box-shadow:
+    0 4px 12px rgba(0,0,0,.12);
+
+    cursor:pointer;
+
+    z-index:9999;
+}
+
+.back-btn:hover{
+    transform:translateY(-1px);
+}
+
+@media(max-width:900px){
+
+    .back-btn{
+        top:14px;
+        left:14px;
+    }
+
+    .portal-shell,
+    .page,
+    .analytics-page{
+        padding-top:72px;
+    }
+
+    .project-header{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .title-project{
+        margin:0;
+    }
+
+}
+

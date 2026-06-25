@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Analytics</title>
+
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/analytics.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script defer src="js/analytics.js"></script>
+
+</head>
+
+<body>
+
+    <button
+        class="back-btn"
+        onclick="history.back()">
+        ←
+    </button>
+
+<main class="app-page analytics-page">
+
+    <h1 class="page-title">
+        分析レポート
+    </h1>
+
+    <h2 id="projectName">Loading...</h2>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <span>総アクセス数 </span>
+            <strong id="totalViews">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>AR起動回数</span>
+            <strong id="totalSessions">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>平均利用時間</span>
+            <strong id="averageTime">0s</strong>
+        </div>
+
+    </div>
+
+    <div class="analytics-card">
+        <h3>利用デバイス</h3>
+        <div id="deviceStats"></div>
+    </div>
+
+    <div class="analytics-card">
+        <h3>利用ブラウザ</h3>
+        <div id="browserStats"></div>
+    </div>
+
+    <div class="analytics-card">
+        <h3>最近の利用履歴</h3>
+        <div id="latestSessions"></div>
+    </div>
+
+</main>
+
+</body>
+</html>

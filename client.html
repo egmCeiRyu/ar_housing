@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Client Details</title>
+
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/client.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/supabase.js"></script>
+<script defer src="js/client.js"></script>
+
+</head>
+
+<body>
+
+<button
+    class="back-btn"
+    onclick="location.href='index.html'">
+    ←
+</button>
+
+<main class="page">
+
+    <section class="client-hero">
+
+        <div>
+            <span class="section-label">顧客情報</span>
+            <h1 id="clientName">読み込み中...</h1>
+            <p id="clientInfo"></p>
+        </div>
+
+        <button id="newProjectBtn">
+            + 新規プロジェクト登録
+        </button>
+
+    </section>
+
+    <section class="projects-section">
+
+        <div class="section-title">
+            <h2>プロジェクト管理</h2>
+            <p>この顧客のAR住宅プロジェクトを管理します。</p>
+        </div>
+
+        <div id="projectList" class="project-list"></div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

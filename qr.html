@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>QR Code</title>
+
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/qr.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script defer src="js/qr.js"></script>
+
+</head>
+
+<body>
+
+<div class="form-card">
+
+    <div class="qr-header">
+    <div>
+        <span class="section-label">Project</span>
+        <h1>QRコード</h1>
+    </div>
+</div>
+
+<div id="projectName" class="qr-project-name"></div>
+
+<div class="qr-box">
+    <img id="qrImage">
+</div>
+
+<label class="qr-label">
+    閲覧用URL
+</label>
+
+<input
+    id="projectUrl"
+    readonly
+>
+
+<div class="qr-actions">
+
+    <button id="copyBtn" class="primary-btn">
+        URLをコピー
+    </button>
+
+    <button id="openBtn" class="secondary-btn">
+        ３Ｄモデルビューアを開く
+    </button>
+
+    <button id="downloadQrBtn" type="button" class="secondary-btn">
+        QRコードをダウンロード
+    </button>
+
+</div>
+
+</div>
+
+</body>
+</html>
