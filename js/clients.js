@@ -1,19 +1,22 @@
-alert(
-    "ADMIN VALUE: " +
-    sessionStorage.getItem("admin")
-);
-
 const isAdmin =
 sessionStorage.getItem("admin") === "true";
 
-if (!isAdmin) {
+document.body.innerHTML =
+`
+<div style="
+    padding:40px;
+    font-family:sans-serif;
+    font-size:22px;
+">
+    ADMIN VALUE:
+    ${sessionStorage.getItem("admin")}
+    <br><br>
+    IS ADMIN:
+    ${isAdmin}
+</div>
+`;
 
-    alert("NOT ADMIN");
-
-    window.location.href =
-    "home.html";
-
-}
+throw new Error("DEBUG STOP");
 
 let editingClientId = null;
 
