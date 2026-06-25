@@ -1,20 +1,17 @@
-
 alert(
     "ADMIN VALUE: " +
     sessionStorage.getItem("admin")
 );
 
-
 const isAdmin =
 sessionStorage.getItem("admin") === "true";
 
-console.log("ADMIN VALUE:", sessionStorage.getItem("admin"));
-console.log("IS ADMIN:", isAdmin);
-
 if (!isAdmin) {
 
+    alert("NOT ADMIN");
+
     window.location.href =
-    "admin-login.html";
+    "home.html";
 
 }
 
