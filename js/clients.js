@@ -192,10 +192,31 @@ async function saveClient() {
                 .update(clientData)
                 .eq("id", editingClientId);
     } else {
+
+        const { data: existingClients, error: countError } =
+            await supabaseClient
+                .from("clients")
+                .select("client_folder");
+
+        if (countError) {
+            console.error(countError);
+            alert(countError.message);
+            return;
+        }
+
+        const nextNumber =
+            (existingClients || []).length + 1;
+
+        const clientFolder =
+            `client_${String(nextNumber).padStart(3, "0")}`;
+
         result =
             await supabaseClient
                 .from("clients")
-                .insert(clientData);
+                .insert({
+                    ...clientData,
+                    client_folder: clientFolder
+                });
     }
 
     if (result.error) {

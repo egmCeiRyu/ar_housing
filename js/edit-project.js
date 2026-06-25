@@ -206,15 +206,37 @@ async function saveProject() {
     let result;
 
     if (isNewProject) {
-        result = await supabaseClient
+
+    const { data: existingProjects, error: countError } =
+        await supabaseClient
             .from("properties")
-            .insert({
-                ...projectData,
-                client_id: clientId
-            })
-            .select()
-            .single();
+            .select("project_folder")
+            .eq("client_id", clientId);
+
+    if (countError) {
+        console.error(countError);
+        alert(countError.message);
+        return;
+    }
+
+    const nextNumber =
+        (existingProjects || []).length + 1;
+
+    const projectFolder =
+        `project_${String(nextNumber).padStart(3, "0")}`;
+
+    result = await supabaseClient
+        .from("properties")
+        .insert({
+            ...projectData,
+            client_id: clientId,
+            project_folder: projectFolder
+        })
+        .select()
+        .single();
+
     } else {
+        
     result = await supabaseClient
         .from("properties")
         .update(projectData)
