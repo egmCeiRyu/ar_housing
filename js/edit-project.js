@@ -1,3 +1,7 @@
+let currentProject = null;
+let currentClient = null;
+
+
 setupDropZone("glbDropZone", "glbFileInput", "glb");
 setupDropZone("thumbDropZone", "thumbFileInput", "thumbnail");
 
@@ -139,7 +143,6 @@ if (!isNewProject) {
     loadColors();
 }
 
-updateSelectedColor();
 
 function updateSelectedColor() {
     colorHex.value =
@@ -149,7 +152,12 @@ function updateSelectedColor() {
 async function loadProject() {
     const { data, error } = await supabaseClient
         .from("properties")
-        .select("*")
+        .select(`
+            *,
+            clients (
+                client_folder
+            )
+        `)
         .eq("id", projectId)
         .single();
 
@@ -158,6 +166,9 @@ async function loadProject() {
         alert(error.message);
         return;
     }
+
+    currentProject = data;
+    currentClient = data.clients;
 
     document.getElementById("name").value = data.name || "";
     document.getElementById("glbUrl").value = data.glb_url || "";
@@ -375,8 +386,23 @@ function openQrPage() {
 
 async function handleProjectFile(file, type) {
 
-    const clientFolder = "client_001";
-    const projectFolder = "project_001";
+    if (!currentProject || !currentClient) {
+    alert("プロジェクト情報を読み込み中です。");
+    return;
+    }
+
+    if (!currentClient.client_folder) {
+        alert("クライアントフォルダが設定されていません。");
+        return;
+    }
+
+    if (!currentProject.project_folder) {
+        alert("プロジェクトフォルダが設定されていません。");
+        return;
+    }
+
+    const clientFolder = currentClient.client_folder;
+    const projectFolder = currentProject.project_folder;
 
     let fileType = "";
     let inputId = "";
