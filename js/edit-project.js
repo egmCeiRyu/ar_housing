@@ -367,7 +367,11 @@ function setupDropZone(zoneId, inputId, type) {
 
 async function handleProjectFile(file, type) {
 
-    console.log("Selected file:", file);
+    const clientFolder = "client_001";
+    const projectFolder = "project_001";
+
+    let fileType = "";
+    let inputId = "";
 
     if (type === "glb") {
         if (!file.name.toLowerCase().endsWith(".glb")) {
@@ -375,7 +379,8 @@ async function handleProjectFile(file, type) {
             return;
         }
 
-        document.getElementById("glb_url").value = file.name;
+        fileType = "glb";
+        inputId = "glb_url";
     }
 
     if (type === "thumbnail") {
@@ -384,8 +389,51 @@ async function handleProjectFile(file, type) {
             return;
         }
 
-        document.getElementById("thumbnail_url").value = file.name;
+        fileType = "thumbnail";
+        inputId = "thumbnail_url";
     }
 
-    alert("ファイルが選択されました。次にアップロード処理を接続します。");
+    try {
+        alert("アップロードを開始します...");
+
+        const { data, error } =
+            await supabaseClient.functions.invoke(
+                "create-s3-upload-url",
+                {
+                    body: {
+                        clientFolder,
+                        projectFolder,
+                        fileType
+                    }
+                }
+            );
+
+        if (error) {
+            console.error(error);
+            alert("アップロードURLの作成に失敗しました。");
+            return;
+        }
+
+        const uploadResponse = await fetch(data.uploadUrl, {
+            method: "PUT",
+            headers: {
+                "Content-Type": data.contentType
+            },
+            body: file
+        });
+
+        if (!uploadResponse.ok) {
+            console.error(uploadResponse);
+            alert("S3アップロードに失敗しました。");
+            return;
+        }
+
+        document.getElementById(inputId).value = data.publicUrl;
+
+        alert("アップロードが完了しました。");
+
+    } catch (error) {
+        console.error(error);
+        alert("アップロード中にエラーが発生しました。");
+    }
 }
