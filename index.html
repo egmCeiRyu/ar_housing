@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="css/common.css">
 <link rel="stylesheet" href="css/dashboard.css">
 
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script src="js/config.js"></script>
@@ -17,78 +16,84 @@
 </head>
 
 <body>
-    
 
 <main class="admin-shell">
 
     <section class="admin-hero">
 
-    <div>
-        <div class="admin-label">管理画面</div>
-
-        <h1>AR Housing 管理</h1>
-
-        <p>
-            顧客・プロジェクト・QRコード・アクセス分析を管理します。
-        </p>
-    </div>
-
-    <button id="newClientBtn" class="new-client-btn">
-        ＋ 新規顧客登録
-    </button>
-
-</section>
-
-<div id="clientForm" class="client-edit-panel" style="display:none;">
-
-    <div class="client-edit-header">
         <div>
-            <span class="section-label">顧客情報</span>
-            <h2 id="formTitle">新規顧客登録</h2>
-        </div>
-    </div>
+            <div class="admin-label">管理画面</div>
 
-    <div class="form-group">
-        <label>会社名</label>
-        <input id="companyName" placeholder="株式会社ABC不動産">
-    </div>
+            <h1>AR Housing 管理</h1>
 
-    <div class="form-group">
-        <label>担当者名</label>
-        <input id="contactName" placeholder="田中 太郎">
-    </div>
-
-    <div class="form-group">
-        <label>メールアドレス</label>
-        <input id="email" placeholder="client@example.com">
-    </div>
-
-    <div class="client-edit-actions">
-        <button id="saveClientBtn" class="primary-btn">
-            保存
-        </button>
-
-        <button id="cancelClientBtnBottom" type="button" class="secondary-btn">
-            キャンセル
-        </button>
-    </div>
-
-</div>
-
-<section class="clients-section">
-
-    <div class="section-title">
-        <div>
-            <h2>顧客管理</h2>
             <p>
-                登録済み顧客の管理とプロジェクト確認を行います。
+                顧客・プロジェクト・QRコード・アクセス分析を管理します。
             </p>
         </div>
+
+        <button id="newClientBtn" class="new-client-btn">
+            ＋ 新規顧客登録
+        </button>
+
+    </section>
+
+    <div id="clientForm" class="modal hidden">
+
+        <div class="modal-card">
+
+            <div class="client-edit-header">
+                <div>
+                    <span class="section-label">顧客情報</span>
+                    <h2 id="formTitle">新規顧客登録</h2>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>会社名</label>
+                <input id="companyName" placeholder="株式会社ABC不動産">
+            </div>
+
+            <div class="form-group">
+                <label>担当者名</label>
+                <input id="contactName" placeholder="田中 太郎">
+            </div>
+
+            <div class="form-group">
+                <label>メールアドレス</label>
+                <input id="email" placeholder="client@example.com">
+            </div>
+
+            <div class="client-edit-actions">
+                <button id="saveClientBtn" class="primary-btn">
+                    保存
+                </button>
+
+                <button
+                    id="cancelClientBtnBottom"
+                    type="button"
+                    class="secondary-btn">
+                    キャンセル
+                </button>
+            </div>
+
+        </div>
+
     </div>
 
-    <div id="clientList" class="client-list"></div>
+    <section class="clients-section">
 
-</section>
+        <div class="section-title">
+            <div>
+                <h2>顧客管理</h2>
+                <p>
+                    登録済み顧客の管理とプロジェクト確認を行います。
+                </p>
+            </div>
+        </div>
+
+        <div id="clientList" class="client-list"></div>
+
+    </section>
 
 </main>
 

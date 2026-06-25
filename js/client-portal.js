@@ -9,16 +9,17 @@ console.log("admin =", isAdmin);
 if (backButton) {
 
     if (isAdmin) {
-
         backButton.style.display = "flex";
-
     } else {
-
         backButton.style.display = "none";
-
     }
 
+    backButton.addEventListener("click", () => {
+        window.location.href = "index.html";
+    });
 }
+
+
 const params =
 new URLSearchParams(window.location.search);
 
