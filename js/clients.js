@@ -1,17 +1,15 @@
 const isAdmin =
 sessionStorage.getItem("admin") === "true";
 
+console.log("ADMIN VALUE:", sessionStorage.getItem("admin"));
+console.log("IS ADMIN:", isAdmin);
+
 if (!isAdmin) {
 
     window.location.href =
-    `${BASE_PATH}/admin-login.html`;
+    "admin-login.html";
 
 }
-
-console.log(
-    "ADMIN VALUE:",
-    sessionStorage.getItem("admin")
-);
 
 let editingClientId = null;
 

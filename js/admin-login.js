@@ -61,6 +61,6 @@ async function login(){
     );
 
     window.location.href =
-    "https://egmceiryu.github.io/ar_housing/index.html";
+    "index.html";
 
 }
