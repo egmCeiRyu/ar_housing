@@ -61,6 +61,6 @@ async function login(){
     );
 
     window.location.href =
-    "/ar_housing/index.html";
+    `${BASE_PATH}/index.html`;
 
 }

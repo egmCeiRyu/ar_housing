@@ -5,44 +5,67 @@
 
     <meta charset="UTF-8">
 
-    <link rel="stylesheet" href="admin-login.css">
-
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
     <title>管理者ログイン</title>
 
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/admin-login.css">
+
 </head>
 
 <body>
 
-    <h1>
+<div class="login-page">
 
-        管理者ログイン
+    <div class="login-card">
 
-    </h1>
+        <div class="logo">
+            🏠
+        </div>
 
-    <input
-        id="username"
-        type="text"
-        placeholder="ユーザー名">
+        <div class="page-label">
+            AR Housing
+        </div>
 
-    <input
-        id="password"
-        type="password"
-        placeholder="パスワード">
+        <h1>
+            管理者ログイン
+        </h1>
 
-    <button
-        id="loginButton">
+        <p class="subtitle">
+            管理画面へログインしてください。
+        </p>
 
-        ログイン
+        <input
+            id="username"
+            type="text"
+            placeholder="ユーザー名">
 
-    </button>
+        <input
+            id="password"
+            type="password"
+            placeholder="パスワード">
 
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="js/supabase.js"></script>
-    <script src="js/admin-login.js"></script>
+        <button id="loginButton">
+            ログイン
+        </button>
+
+        <button
+            class="back-home"
+            onclick="location.href='home.html'">
+            ← ホームへ戻る
+        </button>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/admin-login.js"></script>
 
 </body>
 

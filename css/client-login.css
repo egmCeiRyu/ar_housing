@@ -30,7 +30,7 @@ body{
     height:72px;
     margin:auto;
     border-radius:22px;
-    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    background:linear-gradient(135deg,#10b981,#059669);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -73,7 +73,7 @@ input{
 }
 
 input:focus{
-    border-color:#2563eb;
+    border-color:#10b981;
 }
 
 #loginButton{
@@ -81,7 +81,7 @@ input:focus{
     height:62px;
     border:none;
     border-radius:18px;
-    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    background:linear-gradient(135deg,#10b981,#059669);
     color:#fff;
     font-size:18px;
     font-weight:800;
