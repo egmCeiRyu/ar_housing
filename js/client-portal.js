@@ -4,16 +4,21 @@ sessionStorage.getItem("admin") === "true";
 const backButton =
 document.getElementById("backButton");
 
-if (isAdmin) {
+console.log("admin =", isAdmin);
 
-    backButton.style.display = "flex";
+if (backButton) {
 
-} else {
+    if (isAdmin) {
 
-    backButton.style.display = "none";
+        backButton.style.display = "flex";
+
+    } else {
+
+        backButton.style.display = "none";
+
+    }
 
 }
-
 const params =
 new URLSearchParams(window.location.search);
 
