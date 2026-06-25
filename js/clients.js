@@ -1,22 +1,12 @@
 const isAdmin =
 sessionStorage.getItem("admin") === "true";
 
-document.body.innerHTML =
-`
-<div style="
-    padding:40px;
-    font-family:sans-serif;
-    font-size:22px;
-">
-    ADMIN VALUE:
-    ${sessionStorage.getItem("admin")}
-    <br><br>
-    IS ADMIN:
-    ${isAdmin}
-</div>
-`;
+if (!isAdmin) {
 
-throw new Error("DEBUG STOP");
+    window.location.href =
+    `${BASE_PATH}/admin-login.html`;
+
+}
 
 let editingClientId = null;
 
