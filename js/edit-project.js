@@ -382,67 +382,62 @@ async function handleProjectFile(file, type) {
     let inputId = "";
 
     if (type === "glb") {
-        if (!file.name.toLowerCase().endsWith(".glb")) {
-            alert("GLBファイルを選択してください。");
-            return;
-        }
-
         fileType = "glb";
         inputId = "glbUrl";
     }
 
     if (type === "thumbnail") {
-        if (!file.type.startsWith("image/")) {
-            alert("画像ファイルを選択してください。");
-            return;
-        }
-
         fileType = "thumbnail";
         inputId = "thumbnailUrl";
     }
 
-    try {
-        alert("アップロードを開始します...");
+    console.log("UPLOAD START:", {
+        fileName: file.name,
+        fileType,
+        clientFolder,
+        projectFolder
+    });
 
-        const { data, error } =
-            await supabaseClient.functions.invoke(
-                "create-s3-upload-url",
-                {
-                    body: {
-                        clientFolder,
-                        projectFolder,
-                        fileType
-                    }
+    const { data, error } =
+        await supabaseClient.functions.invoke(
+            "create-s3-upload-url",
+            {
+                body: {
+                    clientFolder,
+                    projectFolder,
+                    fileType
                 }
-            );
+            }
+        );
 
-        if (error) {
-            console.error(error);
-            alert("アップロードURLの作成に失敗しました。");
-            return;
-        }
+    console.log("FUNCTION DATA:", data);
+    console.log("FUNCTION ERROR:", error);
 
-        const uploadResponse = await fetch(data.uploadUrl, {
-            method: "PUT",
-            headers: {
-                "Content-Type": data.contentType
-            },
-            body: file
-        });
-
-        if (!uploadResponse.ok) {
-            console.error(uploadResponse);
-            alert("S3アップロードに失敗しました。");
-            return;
-        }
-
-        document.getElementById(inputId).value = data.publicUrl;
-
-        alert("アップロードが完了しました。");
-
-    } catch (error) {
-        console.error(error);
-        alert("アップロード中にエラーが発生しました。");
+    if (error || !data?.uploadUrl) {
+        alert("Presigned URL error");
+        return;
     }
+
+    const uploadResponse = await fetch(data.uploadUrl, {
+        method: "PUT",
+        headers: {
+            "Content-Type": data.contentType
+        },
+        body: file
+    });
+
+    console.log("S3 STATUS:", uploadResponse.status);
+    console.log("S3 OK:", uploadResponse.ok);
+
+    if (!uploadResponse.ok) {
+        const text = await uploadResponse.text();
+        console.error("S3 ERROR TEXT:", text);
+        alert("S3 upload failed: " + uploadResponse.status);
+        return;
+    }
+
+    document.getElementById(inputId).value = data.publicUrl;
+
+    alert("アップロードが完了しました。");
 }
 
