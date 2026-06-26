@@ -260,8 +260,18 @@ async function saveProject() {
     );
 
     if (isNewProject) {
+
         location.href =
             `edit-project.html?id=${result.data.id}`;
+
+    } else {
+
+        sessionStorage.setItem(
+            "reloadProjects",
+            "true"
+        );
+
+        history.back();
     }
 }
 function updateSelectedColor() {
