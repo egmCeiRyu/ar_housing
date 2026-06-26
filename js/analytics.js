@@ -28,7 +28,6 @@ if (!projectId) {
     window.location.href = "home.html";
 }
 
-loadAnalytics();
 
 async function loadAnalytics() {
 
