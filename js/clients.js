@@ -258,19 +258,56 @@ async function saveClient() {
 
     if (newClientId) {
 
-        const response =
-            await supabaseClient.functions.invoke(
-                "create-client-user",
-                {
-                    body: {
-                        clientId: newClientId,
-                        email: email,
-                        companyName: companyName
-                    }
-                }
-            );
+    const response =
+    await supabaseClient.functions.invoke(
+        "create-client-user",
+        {
+            body: {
+                clientId: newClientId,
+                email: email,
+                companyName: companyName
+            }
+        }
+    );
 
-console.log("FUNCTION RESPONSE:", response);
+    console.log("FUNCTION RESPONSE:", response);
+
+    const {
+        data,
+        error
+    } = response;
+
+    if (error || data?.error) {
+
+        console.error(error || data.error);
+
+        alert(
+            "ログインユーザーを作成できませんでした。\n\n" +
+            (data?.error || error?.message || "")
+        );
+
+        return;
+    }
+
+    alert(
+`顧客を登録しました。
+
+メール:
+${email}
+
+仮パスワード:
+${data.temporary_password}
+
+この情報をお客様へ送ってください。`
+    );
+
+} else {
+
+    alert(
+        "顧客情報を更新しました。"
+    );
+
+}
 
 const {
     data,
