@@ -177,3 +177,19 @@ async function deleteProject(id) {
 
     await loadProjects();
 }
+
+window.addEventListener("pageshow", async () => {
+
+    if (
+        sessionStorage.getItem("projectsNeedReload") === "true"
+    ) {
+
+        sessionStorage.removeItem(
+            "projectsNeedReload"
+        );
+
+        await loadClient();
+        await loadProjects();
+    }
+
+});
