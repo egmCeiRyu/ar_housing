@@ -13,43 +13,32 @@ async function initializePage() {
 let editingClientId = null;
 
 const clientForm =
-    document.getElementById("clientForm");
+document.getElementById("clientForm");
 
 const formTitle =
-    document.getElementById("formTitle");
+document.getElementById("formTitle");
 
 const companyNameInput =
-    document.getElementById("companyName");
+document.getElementById("companyName");
 
 const contactNameInput =
-    document.getElementById("contactName");
+document.getElementById("contactName");
 
 const emailInput =
-    document.getElementById("email");
+document.getElementById("email");
 
 const newClientBtn =
-    document.getElementById("newClientBtn");
+document.getElementById("newClientBtn");
 
 const saveClientBtn =
-    document.getElementById("saveClientBtn");
+document.getElementById("saveClientBtn");
 
 const cancelClientBtnBottom =
-    document.getElementById("cancelClientBtnBottom");
+document.getElementById("cancelClientBtnBottom");
 
-newClientBtn.addEventListener(
-    "click",
-    openNewClientForm
-);
-
-saveClientBtn.addEventListener(
-    "click",
-    saveClient
-);
-
-cancelClientBtnBottom.addEventListener(
-    "click",
-    closeClientForm
-);
+newClientBtn.addEventListener("click", openNewClientForm);
+saveClientBtn.addEventListener("click", saveClient);
+cancelClientBtnBottom.addEventListener("click", closeClientForm);
 
 async function loadClients() {
 
@@ -71,7 +60,7 @@ async function loadClients() {
 function renderClients(clients) {
 
     const container =
-        document.getElementById("clientList");
+    document.getElementById("clientList");
 
     container.innerHTML = "";
 
@@ -79,7 +68,6 @@ function renderClients(clients) {
 
         container.innerHTML += `
             <div class="project-card">
-
                 <div class="project-content">
 
                     <div class="project-name">
@@ -115,7 +103,6 @@ function renderClients(clients) {
                     </div>
 
                 </div>
-
             </div>
         `;
     });
@@ -126,7 +113,7 @@ function openNewClientForm() {
     editingClientId = null;
 
     formTitle.innerText =
-        "新規顧客登録";
+    "新規顧客登録";
 
     companyNameInput.value = "";
     contactNameInput.value = "";
@@ -153,16 +140,16 @@ async function editClient(id) {
     editingClientId = id;
 
     formTitle.innerText =
-        "顧客情報編集";
+    "顧客情報編集";
 
     companyNameInput.value =
-        data.company_name || "";
+    data.company_name || "";
 
     contactNameInput.value =
-        data.contact_name || "";
+    data.contact_name || "";
 
     emailInput.value =
-        data.email || "";
+    data.email || "";
 
     clientForm.style.display = "block";
 }
@@ -170,13 +157,13 @@ async function editClient(id) {
 async function saveClient() {
 
     const companyName =
-        companyNameInput.value.trim();
+    companyNameInput.value.trim();
 
     const contactName =
-        contactNameInput.value.trim();
+    contactNameInput.value.trim();
 
     const email =
-        emailInput.value.trim();
+    emailInput.value.trim();
 
     if (!companyName) {
         alert("会社名を入力してください");
@@ -203,17 +190,17 @@ async function saveClient() {
     if (editingClientId) {
 
         result =
-            await supabaseClient
-                .from("clients")
-                .update(clientData)
-                .eq("id", editingClientId);
+        await supabaseClient
+            .from("clients")
+            .update(clientData)
+            .eq("id", editingClientId);
 
     } else {
 
         const { data: existingClients, error: countError } =
-            await supabaseClient
-                .from("clients")
-                .select("client_folder");
+        await supabaseClient
+            .from("clients")
+            .select("client_folder");
 
         if (countError) {
             console.error(countError);
@@ -221,25 +208,24 @@ async function saveClient() {
 
             saveClientBtn.disabled = false;
             saveClientBtn.innerText = "保存";
-
             return;
         }
 
         const nextNumber =
-            (existingClients || []).length + 1;
+        (existingClients || []).length + 1;
 
         const clientFolder =
-            `client_${String(nextNumber).padStart(3, "0")}`;
+        `client_${String(nextNumber).padStart(3, "0")}`;
 
         result =
-            await supabaseClient
-                .from("clients")
-                .insert({
-                    ...clientData,
-                    client_folder: clientFolder
-                })
-                .select()
-                .single();
+        await supabaseClient
+            .from("clients")
+            .insert({
+                ...clientData,
+                client_folder: clientFolder
+            })
+            .select()
+            .single();
 
         if (!result.error && result.data) {
             newClientId = result.data.id;
@@ -252,44 +238,42 @@ async function saveClient() {
 
         saveClientBtn.disabled = false;
         saveClientBtn.innerText = "保存";
-
         return;
     }
 
     if (newClientId) {
 
-    const response =
-    await supabaseClient.functions.invoke(
-        "create-client-user",
-        {
-            body: {
-                clientId: newClientId,
-                email: email,
-                companyName: companyName
+        const response =
+        await supabaseClient.functions.invoke(
+            "create-client-user",
+            {
+                body: {
+                    clientId: newClientId,
+                    email: email,
+                    companyName: companyName
+                }
             }
-        }
-    );
-
-    console.log("FUNCTION RESPONSE:", response);
-
-    const {
-        data,
-        error
-    } = response;
-
-    if (error || data?.error) {
-
-        console.error(error || data.error);
-
-        alert(
-            "ログインユーザーを作成できませんでした。\n\n" +
-            (data?.error || error?.message || "")
         );
 
-        return;
-    }
+        console.log("FUNCTION RESPONSE:", response);
 
-    alert(
+        const { data, error } =
+        response;
+
+        if (error || data?.error) {
+            console.error(error || data.error);
+
+            alert(
+                "ログインユーザーを作成できませんでした。\n\n" +
+                (data?.error || error?.message || "")
+            );
+
+            saveClientBtn.disabled = false;
+            saveClientBtn.innerText = "保存";
+            return;
+        }
+
+        alert(
 `顧客を登録しました。
 
 メール:
@@ -299,37 +283,11 @@ ${email}
 ${data.temporary_password}
 
 この情報をお客様へ送ってください。`
-    );
-
-} else {
-
-    alert(
-        "顧客情報を更新しました。"
-    );
-
-}
-
-const {
-    data,
-    error
-} = response;
-
-        if (error || data?.error) {
-            console.error(error || data.error);
-
-            alert(
-                "顧客は登録されましたが、ログイン招待メールの送信に失敗しました。\n" +
-                (data?.error || error?.message || "")
-            );
-        } else {
-            alert(
-                "顧客を登録しました。\nログイン招待メールを送信しました。"
-            );
-        }
+        );
 
     } else {
 
-        alert("顧客情報を更新しました");
+        alert("顧客情報を更新しました。");
     }
 
     saveClientBtn.disabled = false;
@@ -350,13 +308,13 @@ function closeClientForm() {
 function openProjects(id) {
 
     location.href =
-        `client.html?id=${id}`;
+    `client.html?id=${id}`;
 }
 
 function openClientPortal(id) {
 
     location.href =
-        `client-portal.html?id=${id}`;
+    `client-portal.html?id=${id}`;
 }
 
 async function deleteClient(id) {
@@ -381,7 +339,7 @@ async function deleteClient(id) {
     }
 
     const ok =
-        confirm("この顧客を削除しますか？");
+    confirm("この顧客を削除しますか？");
 
     if (!ok) return;
 
