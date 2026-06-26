@@ -16,7 +16,7 @@ async function initializeBackButton() {
     console.log("Admin session:", isAdmin);
 
     backButton.style.display =
-        isAdmin ? "flex" : "none";
+    isAdmin ? "flex" : "none";
 
     backButton.addEventListener("click", () => {
         window.location.href = "index.html";
