@@ -1,65 +1,95 @@
-document
-.getElementById("loginButton")
-.addEventListener(
+const emailInput =
+document.getElementById("email");
+
+const passwordInput =
+document.getElementById("password");
+
+const loginButton =
+document.getElementById("loginButton");
+
+initializePage();
+
+async function initializePage() {
+
+    const { data } =
+    await supabaseClient.auth.getSession();
+
+    if (data.session) {
+
+        window.location.href =
+        "client-portal.html";
+
+        return;
+
+    }
+
+}
+
+loginButton.addEventListener(
     "click",
     loginClient
+);
+
+passwordInput.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (event.key === "Enter") {
+            loginClient();
+        }
+
+    }
 );
 
 async function loginClient() {
 
     const email =
-        document
-        .getElementById("email")
-        .value
-        .trim();
+    emailInput.value.trim();
 
     const password =
-        document
-        .getElementById("password")
-        .value
-        .trim();
+    passwordInput.value.trim();
 
     if (!email || !password) {
 
         alert(
-            "メールアドレスとパスワードを入力してください"
+            "メールアドレスとパスワードを入力してください。"
         );
 
         return;
-
     }
 
-    const { data, error } =
-        await supabaseClient
-            .from("clients")
-            .select("*")
-            .eq("email", email)
-            .eq("client_password", password)
-            .single();
+    loginButton.disabled = true;
+    loginButton.innerText = "ログイン中...";
 
-    if (error || !data) {
+    const { data, error } =
+    await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    loginButton.disabled = false;
+    loginButton.innerText = "ログイン";
+
+    if (error) {
 
         alert(
-            "ログイン情報が正しくありません"
+            "メールアドレスまたはパスワードが正しくありません。"
         );
 
         console.error(error);
 
         return;
-
     }
 
-    localStorage.setItem(
-        "client_id",
-        data.id
-    );
+    if (!data.user) {
 
-    localStorage.setItem(
-        "client_name",
-        data.company_name
-    );
+        alert(
+            "ログインできませんでした。"
+        );
+
+        return;
+    }
 
     window.location.href =
-    "client-portal.html?id=" + data.id;
-
+    "client-portal.html";
 }

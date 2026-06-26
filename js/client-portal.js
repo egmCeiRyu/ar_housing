@@ -1,7 +1,64 @@
 const backButton =
 document.getElementById("backButton");
 
-initializeBackButton();
+const params =
+new URLSearchParams(window.location.search);
+
+const adminClientId =
+params.get("id");
+
+let clientId = null;
+
+initializePage();
+
+async function initializePage() {
+
+    await initializeBackButton();
+
+    if (adminClientId) {
+
+        clientId = adminClientId;
+
+    } else {
+
+        const { data: authData } =
+        await supabaseClient.auth.getUser();
+
+        if (!authData.user) {
+
+            window.location.href =
+            "client-login.html";
+
+            return;
+        }
+
+        const { data: client, error } =
+        await supabaseClient
+            .from("clients")
+            .select("id")
+            .eq("auth_user_id", authData.user.id)
+            .single();
+
+        if (error || !client) {
+
+            alert("お客様情報が見つかりません。");
+
+            console.error(error);
+
+            await supabaseClient.auth.signOut();
+
+            window.location.href =
+            "client-login.html";
+
+            return;
+        }
+
+        clientId = client.id;
+    }
+
+    await loadClient();
+    await loadProjects();
+}
 
 async function initializeBackButton() {
 
@@ -11,30 +68,18 @@ async function initializeBackButton() {
     await supabaseClient.auth.getSession();
 
     const isAdmin =
-    !!data.session;
+    !!data.session && !!adminClientId;
 
     backButton.style.display =
     isAdmin ? "flex" : "none";
 
     backButton.addEventListener("click", () => {
-        window.location.href = "index.html";
+
+        window.location.href =
+        "index.html";
+
     });
 }
-
-
-const params =
-new URLSearchParams(window.location.search);
-
-const clientId =
-params.get("id");
-
-if (!clientId) {
-    alert("Client ID not found");
-    throw new Error("Client ID not found");
-}
-
-loadClient();
-loadProjects();
 
 async function loadClient() {
 
@@ -84,7 +129,9 @@ async function loadProjects() {
         .from("properties")
         .select("*")
         .eq("client_id", clientId)
-        .order("created_at", { ascending: true });
+        .order("created_at", {
+            ascending: true
+        });
 
     if (error) {
         console.error(error);
@@ -103,13 +150,15 @@ function renderProjects(projects) {
     container.innerHTML = "";
 
     if (projects.length === 0) {
+
         container.innerHTML = `
             <div class="project-card">
                 <div class="project-content">
-                    No projects found.
+                    プロジェクトがありません。
                 </div>
             </div>
         `;
+
         return;
     }
 
@@ -119,7 +168,7 @@ function renderProjects(projects) {
             <div class="project-card">
 
                 ${project.thumbnail_url ? `
-                <img src="${project.thumbnail_url}">
+                    <img src="${project.thumbnail_url}">
                 ` : ""}
 
                 <div class="project-content">
@@ -153,6 +202,7 @@ function renderProjects(projects) {
 }
 
 function projectQr(id) {
+
     window.open(
         `qr.html?id=${id}`,
         "_blank"
@@ -160,6 +210,7 @@ function projectQr(id) {
 }
 
 function projectAnalytics(id) {
+
     location.href =
     `analytics.html?id=${id}`;
 }
