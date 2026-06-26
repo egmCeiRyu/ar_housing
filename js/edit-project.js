@@ -51,6 +51,13 @@ window.addEventListener("drop", (event) => {
     event.preventDefault();
 });
 
+const params = new URLSearchParams(window.location.search);
+
+const projectId = params.get("id");
+const clientId = params.get("client");
+
+const isNewProject = !projectId;
+
 initializePage();
 
 async function initializePage() {
@@ -59,23 +66,11 @@ async function initializePage() {
 
     if (!ok) return;
 
-    initializeProject();
-}
-
-function initializeProject() {
-
     if (!isNewProject) {
-        loadProject();
-        loadColors();
+        await loadProject();
+        await loadColors();
     }
 }
-
-const params = new URLSearchParams(window.location.search);
-
-const projectId = params.get("id");
-const clientId = params.get("client");
-
-const isNewProject = !projectId;
 
 if (!projectId && !clientId) {
     alert("Project ID or Client ID not found");
