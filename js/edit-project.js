@@ -1,14 +1,91 @@
 let currentProject = null;
 let currentClient = null;
 
+const params =
+new URLSearchParams(window.location.search);
+
+const projectId =
+params.get("id");
+
+const clientId =
+params.get("client");
+
+const isNewProject =
+!projectId;
+
+if (!projectId && !clientId) {
+    alert("プロジェクトIDまたはクライアントIDが見つかりません。");
+    throw new Error("Project ID or Client ID not found");
+}
+
+const saveBtn =
+document.getElementById("saveBtn");
+
+const addColorBtn =
+document.getElementById("addColorBtn");
+
+const picker =
+document.getElementById("colorPicker");
+
+const colorHex =
+document.getElementById("colorHex");
+
+saveBtn.addEventListener("click", saveProject);
+addColorBtn.addEventListener("click", addColor);
+
+picker.addEventListener("input", updateSelectedColor);
+
+colorHex.addEventListener("input", () => {
+    let value =
+    colorHex.value.trim();
+
+    if (!value.startsWith("#")) {
+        value = "#" + value;
+    }
+
+    if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+        picker.value = value;
+        colorHex.value = value.toUpperCase();
+    }
+});
 
 setupDropZone("glbDropZone", "glbFileInput", "glb");
 setupDropZone("thumbDropZone", "thumbFileInput", "thumbnail");
 
+window.addEventListener("dragover", (event) => {
+    event.preventDefault();
+});
+
+window.addEventListener("drop", (event) => {
+    event.preventDefault();
+});
+
+initializePage();
+
+async function initializePage() {
+
+    const ok =
+    await requireAdmin();
+
+    if (!ok) return;
+
+    updateSelectedColor();
+
+    if (!isNewProject) {
+        await loadProject();
+        await loadColors();
+    }
+}
+
 function setupDropZone(zoneId, inputId, type) {
 
-    const zone = document.getElementById(zoneId);
-    const input = document.getElementById(inputId);
+    const zone =
+    document.getElementById(zoneId);
+
+    const input =
+    document.getElementById(inputId);
+
+    if (!zone || !input) return;
 
     zone.addEventListener("click", () => {
         input.click();
@@ -27,7 +104,8 @@ function setupDropZone(zoneId, inputId, type) {
         event.preventDefault();
         zone.classList.remove("drag-over");
 
-        const file = event.dataTransfer.files[0];
+        const file =
+        event.dataTransfer.files[0];
 
         if (!file) return;
 
@@ -35,7 +113,8 @@ function setupDropZone(zoneId, inputId, type) {
     });
 
     input.addEventListener("change", async () => {
-        const file = input.files[0];
+        const file =
+        input.files[0];
 
         if (!file) return;
 
@@ -43,118 +122,18 @@ function setupDropZone(zoneId, inputId, type) {
     });
 }
 
-window.addEventListener("dragover", (event) => {
-    event.preventDefault();
-});
-
-window.addEventListener("drop", (event) => {
-    event.preventDefault();
-});
-
-const params = new URLSearchParams(window.location.search);
-
-const projectId = params.get("id");
-const clientId = params.get("client");
-
-const isNewProject = !projectId;
-
-initializePage();
-
-async function initializePage() {
-
-    const ok = await requireAdmin();
-
-    if (!ok) return;
-
-    if (!isNewProject) {
-        await loadProject();
-        await loadColors();
-    }
-}
-
-if (!projectId && !clientId) {
-    alert("Project ID or Client ID not found");
-    throw new Error("Project ID or Client ID not found");
-}
-
-const saveBtn =
-document.getElementById("saveBtn");
-
-const openViewerBtn =
-document.getElementById("openViewerBtn");
-
-const openQrBtn =
-document.getElementById("openQrBtn");
-
-const addColorBtn =
-document.getElementById("addColorBtn");
-
-const picker =
-document.getElementById("colorPicker");
-
-const colorHex =
-document.getElementById("colorHex");
-
-saveBtn.addEventListener(
-    "click",
-    saveProject
-);
-
-addColorBtn.addEventListener(
-    "click",
-    addColor
-);
-
-picker.addEventListener(
-    "input",
-    updateSelectedColor
-);
-
-colorHex.addEventListener(
-    "input",
-    () => {
-
-        let value =
-        colorHex.value.trim();
-
-        if (!value.startsWith("#")) {
-            value = "#" + value;
-        }
-
-        if (
-            /^#[0-9A-Fa-f]{6}$/
-            .test(value)
-        ) {
-            picker.value = value;
-            colorHex.value =
-            value.toUpperCase();
-        }
-    }
-);
-
-// openViewerBtn?.addEventListener(
-//     "click",
-//     openViewer
-// );
-
-// openQrBtn?.addEventListener(
-//     "click",
-//     openQrPage
-// );
-
-if (!isNewProject) {
-    loadProject();
-    loadColors();
-}
-
-
 function updateSelectedColor() {
+
+    if (!picker || !colorHex) return;
+
     colorHex.value =
     picker.value.toUpperCase();
 }
 
 async function loadProject() {
-    const { data, error } = await supabaseClient
+
+    const { data, error } =
+    await supabaseClient
         .from("properties")
         .select(`
             *,
@@ -171,17 +150,35 @@ async function loadProject() {
         return;
     }
 
-    currentProject = data;
-    currentClient = data.clients;
+    currentProject =
+    data;
 
-    document.getElementById("name").value = data.name || "";
-    document.getElementById("glbUrl").value = data.glb_url || "";
-    document.getElementById("thumbnailUrl").value = data.thumbnail_url || "";
-    document.getElementById("editableMaterial").value = data.editable_material || "";
-    document.getElementById("status").value = data.status || "active";
+    currentClient =
+    data.clients;
+
+    document.getElementById("name").value =
+    data.name || "";
+
+    document.getElementById("glbUrl").value =
+    data.glb_url || "";
+
+    document.getElementById("thumbnailUrl").value =
+    data.thumbnail_url || "";
+
+    const editableMaterialInput =
+    document.getElementById("editableMaterial");
+
+    if (editableMaterialInput) {
+        editableMaterialInput.value =
+        data.editable_material || "wallpaint";
+    }
+
+    document.getElementById("status").value =
+    data.status || "active";
 }
 
 function createSlug(name) {
+
     return name
         .toLowerCase()
         .trim()
@@ -191,10 +188,15 @@ function createSlug(name) {
 }
 
 async function saveProject() {
-    const name = document.getElementById("name").value.trim();
+
+    const name =
+    document
+        .getElementById("name")
+        .value
+        .trim();
 
     if (!name) {
-        alert("Please enter project name");
+        alert("プロジェクト名を入力してください。");
         return;
     }
 
@@ -211,40 +213,44 @@ async function saveProject() {
 
     if (isNewProject) {
 
-    const { data: existingProjects, error: countError } =
+        const { data: existingProjects, error: countError } =
         await supabaseClient
             .from("properties")
             .select("project_folder")
             .eq("client_id", clientId);
 
-    if (countError) {
-        console.error(countError);
-        alert(countError.message);
-        return;
-    }
+        if (countError) {
+            console.error(countError);
+            alert(countError.message);
+            return;
+        }
 
-    const nextNumber =
+        const nextNumber =
         (existingProjects || []).length + 1;
 
-    const projectFolder =
+        const projectFolder =
         `project_${String(nextNumber).padStart(3, "0")}`;
 
-    result = await supabaseClient
-        .from("properties")
-        .insert({
-            ...projectData,
-            client_id: clientId,
-            project_folder: projectFolder
-        })
-        .select()
-        .single();
+        result =
+        await supabaseClient
+            .from("properties")
+            .insert({
+                ...projectData,
+                client_id: clientId,
+                project_folder: projectFolder
+            })
+            .select()
+            .single();
 
     } else {
-        
-    result = await supabaseClient
-        .from("properties")
-        .update(projectData)
-        .eq("id", projectId);
+
+        result =
+        await supabaseClient
+            .from("properties")
+            .update(projectData)
+            .eq("id", projectId)
+            .select()
+            .single();
     }
 
     if (result.error) {
@@ -253,26 +259,29 @@ async function saveProject() {
         return;
     }
 
-    alert(
-        isNewProject
-            ? "Project Created"
-            : "Project Updated"
+    sessionStorage.setItem(
+        "projectsNeedReload",
+        "true"
     );
 
-    sessionStorage.setItem("projectsNeedReload", "true");
+    alert(
+        isNewProject
+            ? "プロジェクトを作成しました。"
+            : "プロジェクトを更新しました。"
+    );
 
     if (isNewProject) {
-        location.href = `edit-project.html?id=${result.data.id}`;
+        location.href =
+        `edit-project.html?id=${result.data.id}`;
     } else {
         history.back();
     }
 }
-function updateSelectedColor() {
-    colorHex.value = picker.value.toUpperCase();
-}
 
 async function loadColors() {
-    const { data, error } = await supabaseClient
+
+    const { data, error } =
+    await supabaseClient
         .from("project_colors")
         .select("*")
         .eq("property_id", projectId)
@@ -288,19 +297,22 @@ async function loadColors() {
 }
 
 function renderColors(colors) {
-    const container = document.getElementById("colorList");
+
+    const container =
+    document.getElementById("colorList");
+
     container.innerHTML = "";
 
     if (colors.length === 0) {
         container.innerHTML = `
             <p style="margin-top:16px;color:#666;">
-                No colors registered yet.
+                まだカラーが登録されていません。
             </p>
         `;
         return;
     }
 
-    colors.forEach(color => {
+    colors.forEach((color) => {
         container.innerHTML += `
             <div class="color-item">
                 <div style="display:flex;align-items:center;gap:10px;">
@@ -316,7 +328,7 @@ function renderColors(colors) {
                 </div>
 
                 <button onclick="deleteColor('${color.id}')">
-                    Delete
+                    削除
                 </button>
             </div>
         `;
@@ -324,26 +336,34 @@ function renderColors(colors) {
 }
 
 async function addColor() {
-    const colorName = document
+
+    if (isNewProject) {
+        alert("先にプロジェクトを保存してください。");
+        return;
+    }
+
+    const colorName =
+    document
         .getElementById("colorName")
         .value
         .trim();
 
-    const colorCode = picker.value.toUpperCase();
+    const colorCode =
+    picker.value.toUpperCase();
 
     if (!colorName) {
-        alert("色名を入力してください");
+        alert("色名を入力してください。");
         return;
     }
 
-    const { data, error } = await supabaseClient
+    const { error } =
+    await supabaseClient
         .from("project_colors")
         .insert({
             property_id: projectId,
             color_name: colorName,
             color_code: colorCode
-        })
-        .select();
+        });
 
     if (error) {
         console.error(error);
@@ -351,23 +371,33 @@ async function addColor() {
         return;
     }
 
-    console.log("Saved color:", data);
+    document.getElementById("colorName").value =
+    "";
 
-    document.getElementById("colorName").value = "";
-    picker.value = "#ffffff";
+    picker.value =
+    "#ffffff";
 
     updateSelectedColor();
+
     await loadColors();
 
-    alert("Color saved");
+    sessionStorage.setItem(
+        "projectsNeedReload",
+        "true"
+    );
+
+    alert("カラーを保存しました。");
 }
 
 async function deleteColor(id) {
-    const ok = confirm("Delete this color?");
+
+    const ok =
+    confirm("このカラーを削除しますか？");
 
     if (!ok) return;
 
-    const { error } = await supabaseClient
+    const { error } =
+    await supabaseClient
         .from("project_colors")
         .delete()
         .eq("id", id);
@@ -379,23 +409,28 @@ async function deleteColor(id) {
     }
 
     await loadColors();
+
+    sessionStorage.setItem(
+        "projectsNeedReload",
+        "true"
+    );
 }
 
 function openViewer() {
 
     const name =
-        document
+    document
         .getElementById("name")
         .value
         .trim();
 
     if (!name) {
-        alert("Save project first");
+        alert("先にプロジェクトを保存してください。");
         return;
     }
 
     const slug =
-        createSlug(name);
+    createSlug(name);
 
     window.open(
         `ar.html?slug=${slug}`,
@@ -411,13 +446,16 @@ function openQrPage() {
     );
 }
 
-
-
 async function handleProjectFile(file, type) {
 
+    if (isNewProject) {
+        alert("先にプロジェクトを保存してください。");
+        return;
+    }
+
     if (!currentProject || !currentClient) {
-    alert("プロジェクト情報を読み込み中です。");
-    return;
+        alert("プロジェクト情報を読み込み中です。");
+        return;
     }
 
     if (!currentClient.client_folder) {
@@ -430,11 +468,17 @@ async function handleProjectFile(file, type) {
         return;
     }
 
-    const clientFolder = currentClient.client_folder;
-    const projectFolder = currentProject.project_folder;
+    const clientFolder =
+    currentClient.client_folder;
 
-    let fileType = "";
-    let inputId = "";
+    const projectFolder =
+    currentProject.project_folder;
+
+    let fileType =
+    "";
+
+    let inputId =
+    "";
 
     if (type === "glb") {
         fileType = "glb";
@@ -446,34 +490,26 @@ async function handleProjectFile(file, type) {
         inputId = "thumbnailUrl";
     }
 
-    console.log("UPLOAD START:", {
-        fileName: file.name,
-        fileType,
-        clientFolder,
-        projectFolder
-    });
-
     const { data, error } =
-        await supabaseClient.functions.invoke(
-            "create-s3-upload-url",
-            {
-                body: {
-                    clientFolder,
-                    projectFolder,
-                    fileType
-                }
+    await supabaseClient.functions.invoke(
+        "create-s3-upload-url",
+        {
+            body: {
+                clientFolder,
+                projectFolder,
+                fileType
             }
-        );
-
-    console.log("FUNCTION DATA:", data);
-    console.log("FUNCTION ERROR:", error);
+        }
+    );
 
     if (error || !data?.uploadUrl) {
-        alert("Presigned URL error");
+        console.error(error);
+        alert("アップロードURLの作成に失敗しました。");
         return;
     }
 
-    const uploadResponse = await fetch(data.uploadUrl, {
+    const uploadResponse =
+    await fetch(data.uploadUrl, {
         method: "PUT",
         headers: {
             "Content-Type": data.contentType
@@ -481,18 +517,27 @@ async function handleProjectFile(file, type) {
         body: file
     });
 
-    console.log("S3 STATUS:", uploadResponse.status);
-    console.log("S3 OK:", uploadResponse.ok);
-
     if (!uploadResponse.ok) {
-        const text = await uploadResponse.text();
+        const text =
+        await uploadResponse.text();
+
         console.error("S3 ERROR TEXT:", text);
-        alert("S3 upload failed: " + uploadResponse.status);
+
+        alert(
+            "S3アップロードに失敗しました: " +
+            uploadResponse.status
+        );
+
         return;
     }
 
-    document.getElementById(inputId).value = data.publicUrl;
+    document.getElementById(inputId).value =
+    data.publicUrl;
 
-    alert("アップロードが完了しました。");
+    sessionStorage.setItem(
+        "projectsNeedReload",
+        "true"
+    );
+
+    alert("アップロードが完了しました。保存ボタンを押してください。");
 }
-

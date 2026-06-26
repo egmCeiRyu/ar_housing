@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
 
 <meta charset="UTF-8">
@@ -21,107 +21,146 @@ content="width=device-width,initial-scale=1">
 
 <body>
 <main class="app-page analytics-page">
+
     <button
         class="back-btn"
         onclick="history.back()">
         ←
     </button>
 
-<header class="header">
+    <header class="header">
 
-    <div class="project-header">
-        <h1 class="title-project">
-            プロジェクト設定
-        </h1>
-    </div>
+        <div class="project-header">
+            <h1 class="title-project">
+                プロジェクト設定
+            </h1>
+        </div>
 
-</header>
+    </header>
 
-<div class="form-card">
+    <div class="form-card">
 
-    <label>
-        Project Name
-    </label>
+        <label>
+            プロジェクト名
+        </label>
 
-    <input id="name">
+        <input id="name">
 
-    <label>GLB URL</label>
-    <input id="glbUrl" type="text">
+        <label>
+            GLB URL
+        </label>
 
-    <div class="drop-zone" id="glbDropZone">
-        <div class="drop-title">GLBファイルをアップロード</div>
-        <div class="drop-text">ここにGLBファイルをドラッグ＆ドロップ</div>
-        <input type="file" id="glbFileInput" accept=".glb" hidden>
-    </div>
+        <input id="glbUrl" type="text">
 
-    <label>Thumbnail URL</label>
-    <input id="thumbnailUrl" type="text">
+        <div class="drop-zone" id="glbDropZone">
+            <div class="drop-title">
+                GLBファイルをアップロード
+            </div>
 
-    <div class="drop-zone" id="thumbDropZone">
-        <div class="drop-title">サムネイルをアップロード</div>
-        <div class="drop-text">ここに画像をドラッグ＆ドロップ</div>
-        <input type="file" id="thumbFileInput" accept="image/*" hidden>
-    </div>
+            <div class="drop-text">
+                ここにGLBファイルをドラッグ＆ドロップ
+            </div>
 
-    <label>Editable Material</label>
+            <input
+                type="file"
+                id="glbFileInput"
+                accept=".glb"
+                hidden>
+        </div>
 
-    <input
-        type="text"
-        value="Wall Paint"
-        disabled>
+        <label>
+            サムネイルURL
+        </label>
 
-    <label>
-        Status
-    </label>
+        <input id="thumbnailUrl" type="text">
 
-    <select id="status">
+        <div class="drop-zone" id="thumbDropZone">
+            <div class="drop-title">
+                サムネイルをアップロード
+            </div>
 
-        <option value="active">
-            Active
-        </option>
+            <div class="drop-text">
+                ここに画像をドラッグ＆ドロップ
+            </div>
 
-        <option value="inactive">
-            Inactive
-        </option>
+            <input
+                type="file"
+                id="thumbFileInput"
+                accept="image/*"
+                hidden>
+        </div>
 
-    </select>
-
-    <button id="saveBtn">
-        Save
-    </button>
-
-</div>
-
-<div class="form-card" id="colors">
-
-    <h2>Colors</h2>
-
-    <label>Color Name</label>
-    <input id="colorName" placeholder="White">
-
-    <label>Color</label>
-
-    <div class="color-row">
+        <label>
+            編集可能なマテリアル
+        </label>
 
         <input
-            type="color"
-            id="colorPicker"
-            value="#ffffff">
-
-        <input
+            id="editableMaterial"
             type="text"
-            id="colorHex"
-            value="#FFFFFF">
+            value="wallpaint"
+            disabled>
+
+        <label>
+            ステータス
+        </label>
+
+        <select id="status">
+
+            <option value="active">
+                有効
+            </option>
+
+            <option value="inactive">
+                無効
+            </option>
+
+        </select>
+
+        <button id="saveBtn">
+            保存
+        </button>
 
     </div>
 
-    <button id="addColorBtn">
-        Add Color
-    </button>
+    <div class="form-card" id="colors">
 
-    <div id="colorList"></div>
+        <h2>
+            カラー
+        </h2>
 
-</div>
+        <label>
+            カラー名
+        </label>
+
+        <input
+            id="colorName"
+            placeholder="ホワイト">
+
+        <label>
+            色
+        </label>
+
+        <div class="color-row">
+
+            <input
+                type="color"
+                id="colorPicker"
+                value="#ffffff">
+
+            <input
+                type="text"
+                id="colorHex"
+                value="#FFFFFF">
+
+        </div>
+
+        <button id="addColorBtn">
+            カラーを追加
+        </button>
+
+        <div id="colorList"></div>
+
+    </div>
 
 </main>
 
