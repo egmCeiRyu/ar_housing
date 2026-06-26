@@ -1,3 +1,9 @@
+const params =
+new URLSearchParams(window.location.search);
+
+const projectId =
+params.get("id");
+
 initializePage();
 
 async function initializePage() {
@@ -7,27 +13,14 @@ async function initializePage() {
 
     if (!ok) return;
 
+    if (!projectId) {
+        alert("プロジェクトIDがありません。");
+        window.location.href = "index.html";
+        return;
+    }
+
     loadAnalytics();
 }
-
-const loggedClientId =
-localStorage.getItem("client_id");
-
-const params =
-new URLSearchParams(window.location.search);
-
-const projectId =
-params.get("id");
-
-if (!isAdmin && !loggedClientId) {
-    window.location.href = "home.html";
-}
-
-if (!projectId) {
-    alert("プロジェクトIDがありません。");
-    window.location.href = "home.html";
-}
-
 
 async function loadAnalytics() {
 
@@ -41,17 +34,7 @@ async function loadAnalytics() {
     if (projectError || !project) {
         console.error(projectError);
         alert("プロジェクトが見つかりません。");
-        window.location.href = "home.html";
-        return;
-    }
-
-    if (!isAdmin && project.client_id !== loggedClientId) {
-
-        alert("このプロジェクトを表示する権限がありません。");
-
-        window.location.href =
-        "client-portal.html";
-
+        window.location.href = "index.html";
         return;
     }
 
@@ -239,49 +222,4 @@ function getDeviceName(value) {
 function getBrowserName(value) {
 
     const text =
-        (value || "").toLowerCase();
-
-    if (text.includes("edg")) {
-        return "Edge";
-    }
-
-    if (
-        text.includes("crios") ||
-        text.includes("chrome")
-    ) {
-        return "Chrome";
-    }
-
-    if (text.includes("safari")) {
-        return "Safari";
-    }
-
-    if (text.includes("firefox")) {
-        return "Firefox";
-    }
-
-    return "その他";
-}
-
-function renderSimpleCount(container, counts) {
-
-    container.innerHTML = "";
-
-    const entries =
-        Object.entries(counts)
-            .sort((a, b) => b[1] - a[1]);
-
-    if (entries.length === 0) {
-        container.innerHTML = "データがありません。";
-        return;
-    }
-
-    entries.forEach(([name, count]) => {
-        container.innerHTML += `
-            <div class="analytics-row">
-                <span>${name}</span>
-                <strong>${count}</strong>
-            </div>
-        `;
-    });
-}
+        (value || "").to
