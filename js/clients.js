@@ -1,16 +1,7 @@
 initializePage();
 
-async function initializePage() {
-
-    const ok =
-    await requireAdmin();
-
-    if (!ok) return;
-
-    loadClients();
-}
-
 let editingClientId = null;
+let editingAuthUserId = null;
 
 const clientForm =
 document.getElementById("clientForm");
@@ -27,6 +18,9 @@ document.getElementById("contactName");
 const emailInput =
 document.getElementById("email");
 
+const clientPasswordInput =
+document.getElementById("clientPassword");
+
 const newClientBtn =
 document.getElementById("newClientBtn");
 
@@ -39,6 +33,16 @@ document.getElementById("cancelClientBtnBottom");
 newClientBtn.addEventListener("click", openNewClientForm);
 saveClientBtn.addEventListener("click", saveClient);
 cancelClientBtnBottom.addEventListener("click", closeClientForm);
+
+async function initializePage() {
+
+    const ok =
+    await requireAdmin();
+
+    if (!ok) return;
+
+    await loadClients();
+}
 
 async function loadClients() {
 
@@ -139,6 +143,7 @@ function renderClients(clients) {
 function openNewClientForm() {
 
     editingClientId = null;
+    editingAuthUserId = null;
 
     formTitle.innerText =
     "新規顧客登録";
@@ -146,7 +151,9 @@ function openNewClientForm() {
     companyNameInput.value = "";
     contactNameInput.value = "";
     emailInput.value = "";
+    clientPasswordInput.value = "";
 
+    clientForm.classList.remove("hidden");
     clientForm.style.display = "block";
 }
 
@@ -165,7 +172,11 @@ async function editClient(id) {
         return;
     }
 
-    editingClientId = id;
+    editingClientId =
+    id;
+
+    editingAuthUserId =
+    data.auth_user_id;
 
     formTitle.innerText =
     "顧客情報編集";
@@ -179,6 +190,10 @@ async function editClient(id) {
     emailInput.value =
     data.email || "";
 
+    clientPasswordInput.value =
+    "";
+
+    clientForm.classList.remove("hidden");
     clientForm.style.display = "block";
 }
 
@@ -193,6 +208,9 @@ async function saveClient() {
     const email =
     emailInput.value.trim();
 
+    const password =
+    clientPasswordInput.value.trim();
+
     if (!companyName) {
         alert("会社名を入力してください");
         return;
@@ -203,25 +221,66 @@ async function saveClient() {
         return;
     }
 
-    const clientData = {
-        company_name: companyName,
-        contact_name: contactName,
-        email: email
-    };
-
-    let result;
-    let newClientId = null;
-
     saveClientBtn.disabled = true;
     saveClientBtn.innerText = "保存中...";
 
     if (editingClientId) {
 
-        result =
+        if (!editingAuthUserId) {
+            alert("Auth User ID が見つかりません。");
+            saveClientBtn.disabled = false;
+            saveClientBtn.innerText = "保存";
+            return;
+        }
+
+        const response =
+        await supabaseClient.functions.invoke(
+            "update-client-login",
+            {
+                body: {
+                    clientId: editingClientId,
+                    authUserId: editingAuthUserId,
+                    email: email,
+                    password: password
+                }
+            }
+        );
+
+        const { data, error } =
+        response;
+
+        if (error || data?.error) {
+            console.error(error || data.error);
+
+            alert(
+                "ログイン情報を更新できませんでした。\n\n" +
+                (data?.error || error?.message || "")
+            );
+
+            saveClientBtn.disabled = false;
+            saveClientBtn.innerText = "保存";
+            return;
+        }
+
+        const { error: profileError } =
         await supabaseClient
             .from("clients")
-            .update(clientData)
+            .update({
+                company_name: companyName,
+                contact_name: contactName
+            })
             .eq("id", editingClientId);
+
+        if (profileError) {
+            console.error(profileError);
+            alert(profileError.message);
+
+            saveClientBtn.disabled = false;
+            saveClientBtn.innerText = "保存";
+            return;
+        }
+
+        alert("顧客情報を更新しました。");
 
     } else {
 
@@ -245,45 +304,38 @@ async function saveClient() {
         const clientFolder =
         `client_${String(nextNumber).padStart(3, "0")}`;
 
-        result =
+        const { data: newClient, error: insertError } =
         await supabaseClient
             .from("clients")
             .insert({
-                ...clientData,
+                company_name: companyName,
+                contact_name: contactName,
+                email: email,
                 client_folder: clientFolder
             })
             .select()
             .single();
 
-        if (!result.error && result.data) {
-            newClientId = result.data.id;
+        if (insertError) {
+            console.error(insertError);
+            alert(insertError.message);
+
+            saveClientBtn.disabled = false;
+            saveClientBtn.innerText = "保存";
+            return;
         }
-    }
-
-    if (result.error) {
-        console.error(result.error);
-        alert(result.error.message);
-
-        saveClientBtn.disabled = false;
-        saveClientBtn.innerText = "保存";
-        return;
-    }
-
-    if (newClientId) {
 
         const response =
         await supabaseClient.functions.invoke(
             "create-client-user",
             {
                 body: {
-                    clientId: newClientId,
+                    clientId: newClient.id,
                     email: email,
                     companyName: companyName
                 }
             }
         );
-
-        console.log("FUNCTION RESPONSE:", response);
 
         const { data, error } =
         response;
@@ -312,10 +364,6 @@ ${data.temporary_password}
 
 この情報をお客様へ送ってください。`
         );
-
-    } else {
-
-        alert("顧客情報を更新しました。");
     }
 
     saveClientBtn.disabled = false;
@@ -329,7 +377,9 @@ ${data.temporary_password}
 function closeClientForm() {
 
     editingClientId = null;
+    editingAuthUserId = null;
 
+    clientForm.classList.add("hidden");
     clientForm.style.display = "none";
 }
 
