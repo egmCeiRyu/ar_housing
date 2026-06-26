@@ -82,6 +82,34 @@ function renderClients(clients) {
                         ${client.email || ""}
                     </div>
 
+                    <div class="login-info">
+
+                        <div class="login-title">
+                            ログイン情報
+                        </div>
+
+                        <div class="login-row">
+                            <span>${client.email || ""}</span>
+
+                            <button
+                                class="copy-btn"
+                                onclick="copyToClipboard('${client.email || ""}')">
+                                📋
+                            </button>
+                        </div>
+
+                        <div class="login-row">
+                            <span>${client.client_password || "-"}</span>
+
+                            <button
+                                class="copy-btn"
+                                onclick="copyToClipboard('${client.client_password || ""}')">
+                                📋
+                            </button>
+                        </div>
+
+                    </div>
+
                     <div class="project-actions">
 
                         <button onclick="editClient('${client.id}')">
@@ -358,4 +386,13 @@ async function deleteClient(id) {
     alert("顧客を削除しました");
 
     await loadClients();
+}
+
+async function copyToClipboard(text) {
+
+    if (!text) return;
+
+    await navigator.clipboard.writeText(text);
+
+    alert("コピーしました");
 }
