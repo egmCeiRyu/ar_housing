@@ -172,27 +172,42 @@ async function saveClient() {
     const companyName =
         companyNameInput.value.trim();
 
+    const contactName =
+        contactNameInput.value.trim();
+
+    const email =
+        emailInput.value.trim();
+
     if (!companyName) {
         alert("会社名を入力してください");
         return;
     }
 
+    if (!email) {
+        alert("メールアドレスを入力してください");
+        return;
+    }
+
     const clientData = {
         company_name: companyName,
-        contact_name:
-            contactNameInput.value.trim(),
-        email:
-            emailInput.value.trim()
+        contact_name: contactName,
+        email: email
     };
 
     let result;
+    let newClientId = null;
+
+    saveClientBtn.disabled = true;
+    saveClientBtn.innerText = "保存中...";
 
     if (editingClientId) {
+
         result =
             await supabaseClient
                 .from("clients")
                 .update(clientData)
                 .eq("id", editingClientId);
+
     } else {
 
         const { data: existingClients, error: countError } =
@@ -203,6 +218,10 @@ async function saveClient() {
         if (countError) {
             console.error(countError);
             alert(countError.message);
+
+            saveClientBtn.disabled = false;
+            saveClientBtn.innerText = "保存";
+
             return;
         }
 
@@ -218,24 +237,63 @@ async function saveClient() {
                 .insert({
                     ...clientData,
                     client_folder: clientFolder
-                });
+                })
+                .select()
+                .single();
+
+        if (!result.error && result.data) {
+            newClientId = result.data.id;
+        }
     }
 
     if (result.error) {
         console.error(result.error);
         alert(result.error.message);
+
+        saveClientBtn.disabled = false;
+        saveClientBtn.innerText = "保存";
+
         return;
     }
+
+    if (newClientId) {
+
+        const { data, error } =
+            await supabaseClient.functions.invoke(
+                "create-client-user",
+                {
+                    body: {
+                        clientId: newClientId,
+                        email: email,
+                        companyName: companyName
+                    }
+                }
+            );
+
+        if (error || data?.error) {
+            console.error(error || data.error);
+
+            alert(
+                "顧客は登録されましたが、ログイン招待メールの送信に失敗しました。\n" +
+                (data?.error || error?.message || "")
+            );
+        } else {
+            alert(
+                "顧客を登録しました。\nログイン招待メールを送信しました。"
+            );
+        }
+
+    } else {
+
+        alert("顧客情報を更新しました");
+    }
+
+    saveClientBtn.disabled = false;
+    saveClientBtn.innerText = "保存";
 
     closeClientForm();
 
     await loadClients();
-
-    alert(
-        editingClientId
-            ? "顧客情報を更新しました"
-            : "顧客を登録しました"
-    );
 }
 
 function closeClientForm() {
