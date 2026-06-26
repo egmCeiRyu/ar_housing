@@ -51,14 +51,23 @@ window.addEventListener("drop", (event) => {
     event.preventDefault();
 });
 
-const isAdmin =
-sessionStorage.getItem("admin");
+initializePage();
 
-if (isAdmin !== "true") {
+async function initializePage() {
 
-    window.location.href =
-    "admin-login.html";
+    const ok = await requireAdmin();
 
+    if (!ok) return;
+
+    initializeProject();
+}
+
+function initializeProject() {
+
+    if (!isNewProject) {
+        loadProject();
+        loadColors();
+    }
 }
 
 const params = new URLSearchParams(window.location.search);
