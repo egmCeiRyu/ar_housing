@@ -1,66 +1,85 @@
-document
-.getElementById("loginButton")
-.addEventListener(
-    "click",
-    login
-);
+const emailInput =
+document.getElementById("email");
 
-async function login(){
+const passwordInput =
+document.getElementById("password");
 
-    const username =
-    document
-    .getElementById("username")
-    .value
-    .trim();
+const loginButton =
+document.getElementById("loginButton");
+
+const togglePasswordButton =
+document.getElementById("togglePassword");
+
+const loginMessage =
+document.getElementById("loginMessage");
+
+loginButton.addEventListener("click", login);
+togglePasswordButton.addEventListener("click", togglePassword);
+
+async function login() {
+
+    const email =
+    emailInput.value.trim();
 
     const password =
-    document
-    .getElementById("password")
-    .value
-    .trim();
+    passwordInput.value.trim();
 
-    if(!username || !password){
-
-        alert(
-            "ユーザー名とパスワードを入力してください。"
+    if(!email || !password) {
+        showMessage(
+            "メールアドレスとパスワードを入力してください。",
+            true
         );
-
         return;
-
     }
+
+    loginButton.disabled = true;
+    loginButton.innerText = "ログイン中...";
 
     const { data, error } =
-    await supabaseClient
-        .from("admins")
-        .select("*")
-        .eq("username", username)
-        .eq("password", password)
-        .eq("role", "admin")
-        .single();
+    await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+    });
 
-    if(error || !data){
+    loginButton.disabled = false;
+    loginButton.innerText = "ログイン";
 
-        console.error(error);
-
-        alert(
-            "ユーザー名またはパスワードが正しくありません。"
+    if(error) {
+        showMessage(
+            "メールアドレスまたはパスワードが正しくありません。",
+            true
         );
-
         return;
-
     }
 
-sessionStorage.setItem(
-    "admin",
-    "true"
-);
+    if(!data.user) {
+        showMessage(
+            "ログインできませんでした。",
+            true
+        );
+        return;
+    }
 
-sessionStorage.setItem(
-    "admin_id",
-    data.id
-);
+    window.location.href = "index.html";
+}
 
-window.location.href =
-`${BASE_PATH}/index.html`;
+function togglePassword() {
 
+    const isPassword =
+    passwordInput.type === "password";
+
+    passwordInput.type =
+    isPassword ? "text" : "password";
+
+    togglePasswordButton.innerText =
+    isPassword ? "非表示" : "表示";
+}
+
+function showMessage(text, isError) {
+
+    loginMessage.innerText =
+    text;
+
+    loginMessage.style.color =
+    isError ? "#dc2626" : "#15803d";
 }

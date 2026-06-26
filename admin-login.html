@@ -2,6 +2,7 @@
 <html lang="ja">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -12,6 +13,7 @@
 
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/admin-login.css">
+
 </head>
 
 <body>
@@ -42,6 +44,7 @@
             placeholder="メールアドレス">
 
         <div class="password-area">
+
             <input
                 id="password"
                 type="password"
@@ -52,55 +55,12 @@
                 type="button">
                 表示
             </button>
+
         </div>
 
         <button id="loginButton">
             ログイン
         </button>
-
-        <button
-            id="forgotPasswordButton"
-            class="forgot-password"
-            type="button">
-            パスワードをお忘れですか？
-        </button>
-
-        <div
-            id="resetBox"
-            class="reset-box hidden">
-
-            <p>
-                登録済みのメールアドレスに再設定リンクを送信します。
-            </p>
-
-            <button
-                id="sendResetButton"
-                type="button">
-                再設定メールを送信
-            </button>
-
-        </div>
-
-        <div
-            id="newPasswordBox"
-            class="reset-box hidden">
-
-            <p>
-                新しいパスワードを入力してください。
-            </p>
-
-            <input
-                id="newPassword"
-                type="password"
-                placeholder="新しいパスワード">
-
-            <button
-                id="updatePasswordButton"
-                type="button">
-                パスワードを更新
-            </button>
-
-        </div>
 
         <p id="loginMessage" class="login-message"></p>
 
