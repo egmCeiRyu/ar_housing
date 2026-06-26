@@ -199,7 +199,7 @@ async function saveProject() {
         slug: createSlug(name),
         glb_url: document.getElementById("glbUrl").value.trim(),
         thumbnail_url: document.getElementById("thumbnailUrl").value.trim(),
-        editable_material: document.getElementById("editableMaterial").value.trim(),
+        editable_material: "wallpaint",
         status: document.getElementById("status").value
     };
 
