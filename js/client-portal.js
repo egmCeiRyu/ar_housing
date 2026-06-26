@@ -1,18 +1,22 @@
-const isAdmin =
-sessionStorage.getItem("admin") === "true";
-
 const backButton =
 document.getElementById("backButton");
 
-console.log("admin =", isAdmin);
+initializeBackButton();
 
-if (backButton) {
+async function initializeBackButton() {
 
-    if (isAdmin) {
-        backButton.style.display = "flex";
-    } else {
-        backButton.style.display = "none";
-    }
+    if (!backButton) return;
+
+    const { data } =
+    await supabaseClient.auth.getSession();
+
+    const isAdmin =
+    !!data.session;
+
+    console.log("Admin session:", isAdmin);
+
+    backButton.style.display =
+        isAdmin ? "flex" : "none";
 
     backButton.addEventListener("click", () => {
         window.location.href = "index.html";
