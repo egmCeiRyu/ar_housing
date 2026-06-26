@@ -6,8 +6,18 @@ new URLSearchParams(
 const clientId =
 params.get("id");
 
-loadClient();
-loadProjects();
+initializePage();
+
+async function initializePage() {
+
+    const ok =
+    await requireAdmin();
+
+    if (!ok) return;
+
+    loadClient();
+    loadProjects();
+}
 
 async function loadClient() {
 

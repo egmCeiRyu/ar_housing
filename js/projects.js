@@ -1,11 +1,13 @@
-const isAdmin =
-sessionStorage.getItem("admin");
+initializePage();
 
-if (isAdmin !== "true") {
+async function initializePage() {
 
-    window.location.href =
-    "admin-login.html";
+    const ok =
+    await requireAdmin();
 
+    if (!ok) return;
+
+    loadProjects();
 }
 
 const params =
@@ -109,4 +111,3 @@ function openAnalytics(id) {
 
 }
 
-loadProjects();

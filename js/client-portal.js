@@ -13,8 +13,6 @@ async function initializeBackButton() {
     const isAdmin =
     !!data.session;
 
-    console.log("Admin session:", isAdmin);
-
     backButton.style.display =
     isAdmin ? "flex" : "none";
 

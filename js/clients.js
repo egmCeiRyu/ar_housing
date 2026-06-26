@@ -1,17 +1,11 @@
-checkAdminSession();
+initializePage();
 
-async function checkAdminSession() {
+async function initializePage() {
 
-    const { data } =
-    await supabaseClient.auth.getSession();
+    const ok =
+    await requireAdmin();
 
-    if (!data.session) {
-
-        window.location.href =
-        "admin-login.html";
-
-        return;
-    }
+    if (!ok) return;
 
     loadClients();
 }

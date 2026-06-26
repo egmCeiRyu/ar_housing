@@ -1,5 +1,14 @@
-const isAdmin =
-sessionStorage.getItem("admin") === "true";
+initializePage();
+
+async function initializePage() {
+
+    const ok =
+    await requireAdmin();
+
+    if (!ok) return;
+
+    loadAnalytics();
+}
 
 const loggedClientId =
 localStorage.getItem("client_id");

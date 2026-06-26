@@ -1,27 +1,27 @@
 
-
-const isAdmin =
-sessionStorage.getItem("admin") === "true";
-
-const loggedClientId =
-localStorage.getItem("client_id");
-
 const params =
 new URLSearchParams(window.location.search);
 
 const projectId =
 params.get("id");
 
-if (!isAdmin && !loggedClientId) {
-    window.location.href = "home.html";
-}
+initializePage();
 
-if (!projectId) {
-    alert("プロジェクトIDがありません。");
-    window.location.href = "home.html";
-}
+async function initializePage() {
 
-loadProject();
+    const ok =
+    await requireAdmin();
+
+    if (!ok) return;
+
+    if (!projectId) {
+        alert("プロジェクトIDがありません。");
+        window.location.href = "index.html";
+        return;
+    }
+
+    loadProject();
+}
 
 async function loadProject() {
 
@@ -36,16 +36,6 @@ async function loadProject() {
         console.error(error);
         alert("プロジェクトが見つかりません。");
         window.location.href = "home.html";
-        return;
-    }
-
-    if (!isAdmin && project.client_id !== loggedClientId) {
-
-        alert("このプロジェクトを表示する権限がありません。");
-
-        window.location.href =
-        "client-portal.html";
-
         return;
     }
 
