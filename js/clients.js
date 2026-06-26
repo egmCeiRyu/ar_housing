@@ -258,7 +258,7 @@ async function saveClient() {
 
     if (newClientId) {
 
-        const { data, error } =
+        const response =
             await supabaseClient.functions.invoke(
                 "create-client-user",
                 {
@@ -269,6 +269,13 @@ async function saveClient() {
                     }
                 }
             );
+
+console.log("FUNCTION RESPONSE:", response);
+
+const {
+    data,
+    error
+} = response;
 
         if (error || data?.error) {
             console.error(error || data.error);
