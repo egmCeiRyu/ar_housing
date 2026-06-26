@@ -259,18 +259,11 @@ async function saveProject() {
             : "Project Updated"
     );
 
+    sessionStorage.setItem("projectsNeedReload", "true");
+
     if (isNewProject) {
-
-        location.href =
-            `edit-project.html?id=${result.data.id}`;
-
+        location.href = `edit-project.html?id=${result.data.id}`;
     } else {
-
-        sessionStorage.setItem(
-            "reloadProjects",
-            "true"
-        );
-
         history.back();
     }
 }

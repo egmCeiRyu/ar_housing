@@ -109,3 +109,14 @@ function openAnalytics(id) {
     `analytics.html?id=${id}`;
 
 }
+
+window.addEventListener("pageshow", async () => {
+
+    if (sessionStorage.getItem("projectsNeedReload") === "true") {
+
+        sessionStorage.removeItem("projectsNeedReload");
+
+        await loadProjects();
+    }
+
+});
