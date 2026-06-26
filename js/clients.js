@@ -1,11 +1,19 @@
-const isAdmin =
-sessionStorage.getItem("admin") === "true";
+checkAdminSession();
 
-if (!isAdmin) {
+async function checkAdminSession() {
 
-    window.location.href =
-    `${BASE_PATH}/admin-login.html`;
+    const { data } =
+    await supabaseClient.auth.getSession();
 
+    if (!data.session) {
+
+        window.location.href =
+        "admin-login.html";
+
+        return;
+    }
+
+    loadClients();
 }
 
 let editingClientId = null;
@@ -297,5 +305,3 @@ async function deleteClient(id) {
 
     await loadClients();
 }
-
-loadClients();
