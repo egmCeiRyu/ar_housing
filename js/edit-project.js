@@ -271,10 +271,11 @@ async function saveProject() {
     );
 
     if (isNewProject) {
-        location.href =
-        `edit-project.html?id=${result.data.id}`;
+    location.href =
+    `edit-project.html?id=${result.data.id}`;
     } else {
-        history.back();
+        location.href =
+        `client.html?id=${currentProject.client_id}`;
     }
 }
 
@@ -540,4 +541,15 @@ async function handleProjectFile(file, type) {
     );
 
     alert("アップロードが完了しました。保存ボタンを押してください。");
+}
+
+function goBackToClient() {
+    if (currentProject?.client_id) {
+        location.href =
+        `client.html?id=${currentProject.client_id}`;
+        return;
+    }
+
+    location.href =
+    "clients.html";
 }
