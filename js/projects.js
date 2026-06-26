@@ -105,9 +105,7 @@ function showQr(slug) {
 
 function openAnalytics(id) {
 
-    alert(
-        `Analytics: ${id}`
-    );
+    location.href =
+    `analytics.html?id=${id}`;
 
 }
-
