@@ -17,6 +17,7 @@ async function initializePage() {
 
     if (adminClientId) {
 
+        if (!(await requireAdmin())) return;
         clientId = adminClientId;
 
     } else {
@@ -64,11 +65,7 @@ async function initializeBackButton() {
 
     if (!backButton) return;
 
-    const { data } =
-    await supabaseClient.auth.getSession();
-
-    const isAdmin =
-    !!data.session && !!adminClientId;
+    const isAdmin = !!adminClientId && await isCurrentUserAdmin();
 
     backButton.style.display =
     isAdmin ? "flex" : "none";

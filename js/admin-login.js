@@ -22,7 +22,7 @@ async function login() {
     emailInput.value.trim();
 
     const password =
-    passwordInput.value.trim();
+    passwordInput.value;
 
     if(!email || !password) {
         showMessage(
@@ -57,6 +57,12 @@ async function login() {
             "ログインできませんでした。",
             true
         );
+        return;
+    }
+
+    if (!(await isCurrentUserAdmin())) {
+        await supabaseClient.auth.signOut();
+        showMessage("管理者アカウントでログインしてください。", true);
         return;
     }
 

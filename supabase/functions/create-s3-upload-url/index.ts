@@ -1,3 +1,4 @@
+import { createClient } from "npm:@supabase/supabase-js@2";
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import {
     S3Client,
@@ -20,6 +21,16 @@ serve(async (req) => {
     }
 
     try {
+        const authorization = req.headers.get("Authorization");
+        const token = authorization?.match(/^Bearer (.+)$/i)?.[1];
+        if (!token) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+        const auth = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
+        const { data, error } = await auth.auth.getUser(token);
+        if (error || !data.user) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+        if (data.user.app_metadata?.role !== "admin") {
+            return new Response("Forbidden", { status: 403, headers: corsHeaders });
+        }
+
         const {
             clientFolder,
             projectFolder,

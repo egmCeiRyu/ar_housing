@@ -1,17 +1,16 @@
-async function requireAdmin() {
-
-    const { data } =
-    await supabaseClient.auth.getSession();
-
-    if (!data.session) {
-
-        window.location.href =
-        "admin-login.html";
-
+async function isCurrentUserAdmin() {
+    try {
+        const { data, error } = await supabaseClient.auth.getUser();
+        return !error && data?.user?.app_metadata?.role === "admin";
+    } catch {
         return false;
     }
+}
 
-    return true;
+async function requireAdmin() {
+    if (await isCurrentUserAdmin()) return true;
+    window.location.replace("admin-login.html");
+    return false;
 }
 
 async function getCurrentUser() {
