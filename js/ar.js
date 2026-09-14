@@ -46,6 +46,8 @@ async function loadAR() {
 
     currentProject = project;
 
+    void loadClientEmail(project);
+
     await loadColorButtons(project.id);
     await savePageView(project.id);
     await startARSession(project.id);
@@ -65,6 +67,34 @@ async function loadAR() {
             );
         }
     });
+}
+
+async function loadClientEmail(project) {
+    try {
+        const { data, error } = await supabaseClient.rpc("get_ar_contact_email", {
+            project_slug: project.slug
+        });
+        if (error) throw error;
+        configureEmailButton(project, data);
+    } catch (error) {
+        console.error("Contact email unavailable:", error);
+        configureEmailButton(project, null);
+    }
+}
+
+function configureEmailButton(project, clientEmail) {
+    const button = document.getElementById("emailClientButton");
+    const email = typeof clientEmail === "string" ? clientEmail.trim() : "";
+    button.hidden = true;
+    button.removeAttribute("href");
+    if (!/^[^\s@<>?,;:]+@[^\s@<>?,;:]+\.[^\s@<>?,;:]+$/.test(email)) return;
+
+    const projectUrl = new URL("ar.html", window.location.href);
+    projectUrl.searchParams.set("slug", project.slug);
+    const subject = `お問い合わせ：${project.name || "物件"}`;
+    const body = `こちらの物件について詳しく知りたいです。\r\n\r\n${project.name || ""}\r\n${projectUrl.href}\r\n\r\nお名前：\r\nお問い合わせ内容：\r\n`;
+    button.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    button.hidden = false;
 }
 
 async function savePageView(propertyId) {
