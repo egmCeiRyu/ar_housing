@@ -118,3 +118,61 @@ body{
 
 }
 
+
+.return-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: fit-content;
+    min-height: 48px;
+    margin: 0 0 16px;
+    padding: 0 15px;
+    border: 1px solid #d9e1eb;
+    border-radius: 12px;
+    background: #fff;
+    color: #142e54;
+    font: 700 14px/1.35 system-ui, sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.return-link svg { flex: none; }
+.return-link:active { background: #e9eff7; }
+.return-link:focus-visible { outline: 3px solid #945122; outline-offset: 3px; }
+
+@media (hover: hover) {
+    .return-link:hover { background: #f0f4f9; border-color: #aebed0; }
+}
+
+.return-link--login {
+    display: flex;
+    width: 100%;
+    margin: 16px 0 0;
+}
+
+.portal-shell.has-return,
+.app-page.has-return,
+.page.has-return {
+    padding-top: 24px;
+}
+
+.app-page.has-return > .header { margin-top: 0; }
+.app-page.has-return > .header h1 { padding-left: 0; }
+
+@media (max-width: 600px) {
+    .portal-shell.has-return,
+    .app-page.has-return,
+    .page.has-return { padding-top: 16px; }
+
+    .portal-shell.has-return .portal-hero { margin-top: 0; }
+    .portal-shell.has-return .projects-section { padding: 16px; }
+    .portal-shell.has-return .project-content { padding: 15px; }
+    .portal-shell.has-return .project-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+    .portal-shell.has-return .project-actions button { min-height: 48px; height: auto; padding: 8px; }
+}
+
