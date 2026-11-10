@@ -28,8 +28,7 @@ async function sendResetEmail() {
     sendButton.disabled = true;
     sendButton.innerText = "送信中...";
 
-    const redirectTo =
-    `${window.location.origin}${BASE_PATH}/reset-password.html`;
+    const redirectTo = "https://qrie.ceiryu.workers.dev/reset-password.html";
 
     const { error } =
     await supabaseClient.auth.resetPasswordForEmail(
