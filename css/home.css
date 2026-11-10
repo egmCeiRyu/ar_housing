@@ -1,201 +1,181 @@
-*{
-    box-sizing:border-box;
+:root {
+    color-scheme: light;
+    font-family: system-ui, -apple-system, "Yu Gothic", Meiryo, sans-serif;
+    color: #142e54;
+    background: #f5f7fa;
+    --ink: #142e54;
+    --muted: #4f6076;
+    --copper: #945122;
+    --line: #d9e1eb;
 }
 
-body{
+* { box-sizing: border-box; }
+body { margin: 0; }
+a { color: inherit; }
 
-    margin:0;
-
-    min-height:100vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    background:
-    linear-gradient(
-        180deg,
-        #eef5ff 0%,
-        #ffffff 100%
-    );
-
-    font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-
+.portal {
+    width: min(100% - 96px, 1240px);
+    margin: 0 auto;
 }
 
-.home-page{
-
-    width:100%;
-
-    max-width:560px;
-
-    padding:24px;
-
+.portal-header {
+    min-height: 92px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--line);
 }
 
-.home-card{
-
-    background:#fff;
-
-    border-radius:28px;
-
-    padding:36px 28px;
-
-    box-shadow:
-    0 15px 40px
-    rgba(0,0,0,.08);
-
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    font: 700 32px/1 Georgia, serif;
+    letter-spacing: .06em;
+    text-decoration: none;
 }
 
-.logo{
-
-    width:72px;
-    height:72px;
-
-    margin:auto;
-
-    border-radius:22px;
-
-    background:
-
-    linear-gradient(
-    135deg,
-    #2563eb,
-    #10b981
-    );
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-size:34px;
-
-    color:#fff;
-
+.brand svg { width: 35px; height: 35px; color: var(--copper); }
+.brand small {
+    font: 600 11px/1 system-ui, sans-serif;
+    letter-spacing: .06em;
+    color: var(--muted);
 }
 
-.page-label{
-
-    margin-top:20px;
-
-    text-align:center;
-
-    font-size:14px;
-
-    font-weight:700;
-
-    color:#5b6f8d;
-
+.header-label {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--muted);
 }
 
-h1{
-
-    margin:10px 0;
-
-    text-align:center;
-
-    font-size:34px;
-
-    color:#10284f;
-
-    font-weight:800;
-
+.portal-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: clamp(34px, 6vw, 92px);
+    padding: clamp(36px, 6vw, 76px) 0;
 }
 
-.subtitle{
-
-    margin:0 0 36px;
-
-    text-align:center;
-
-    color:#708090;
-
-    line-height:1.7;
-
-    font-size:15px;
-
+.eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--copper);
+    font-size: 13px;
+    font-weight: 750;
+    letter-spacing: .12em;
+    margin: 0 0 20px;
 }
 
-.menu-btn{
+.eyebrow::before { content: ""; width: 25px; height: 2px; background: currentColor; }
 
-    width:100%;
-
-    border:none;
-
-    border-radius:22px;
-
-    padding:22px;
-
-    margin-bottom:18px;
-
-    cursor:pointer;
-
-    text-align:left;
-
-    transition:.25s;
-
+h1 {
+    margin: 0;
+    font-family: "Yu Mincho", "Hiragino Mincho ProN", "MS PMincho", serif;
+    font-size: clamp(32px, 4.3vw, 61px);
+    font-weight: 700;
+    line-height: 1.27;
+    letter-spacing: .015em;
 }
 
-.menu-btn:hover{
-
-    transform:translateY(-3px);
-
+.intro-copy {
+    margin: 23px 0 32px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.9;
 }
 
-.admin-btn{
+.portal-access { display: grid; gap: 11px; max-width: 460px; }
 
-    background:
-
-    linear-gradient(
-    135deg,
-    #2563eb,
-    #1d4ed8
-    );
-
-    color:white;
-
+.access-link {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) 20px;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 18px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    text-decoration: none;
 }
 
-.client-btn{
-
-    background:
-
-    linear-gradient(
-    135deg,
-    #10b981,
-    #059669
-    );
-
-    color:white;
-
+.access-link svg {
+    width: 23px;
+    height: 23px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.65;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-.btn-title{
+.access-link strong, .access-link small { display: block; }
+.access-link strong { font-size: 15px; line-height: 1.4; }
+.access-link small { margin-top: 3px; font-size: 12px; line-height: 1.5; }
+.access-primary { color: white; background: var(--ink); border-color: var(--ink); }
+.access-primary small { color: #dce6f2; }
+.access-primary:hover { background: #234775; }
+.access-secondary { background: white; }
+.access-secondary small { color: var(--muted); }
+.access-secondary:hover { border-color: #8298b4; background: #edf2f8; }
+.arrow { font-size: 20px; text-align: right; }
+a:focus-visible { outline: 3px solid var(--copper); outline-offset: 4px; }
 
-    display:block;
-
-    font-size:22px;
-
-    font-weight:800;
-
+.portal-visual {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 22px;
+    background: #dce6ed;
+    box-shadow: 0 14px 36px #142e541c;
 }
 
-.btn-sub{
+.portal-visual img { display: block; width: 100%; height: auto; }
+.portal-visual figcaption {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    padding: 8px 11px;
+    border-radius: 7px;
+    background: var(--ink);
+    color: white;
+    font-size: 11px;
+    font-weight: 650;
+}
 
-    display:block;
+.portal-visual figcaption span {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 4px;
+    border-radius: 50%;
+    background: #e4a66f;
+}
 
-    margin-top:6px;
+.portal-footer {
+    padding: 20px 0 26px;
+    border-top: 1px solid var(--line);
+    font: 700 15px/1 Georgia, serif;
+    letter-spacing: .07em;
+}
 
-    font-size:14px;
+.portal-footer span { color: var(--muted); font: 500 12px/1 system-ui, sans-serif; }
 
-    opacity:.9;
+@media (max-width: 860px) {
+    .portal { width: min(100% - 40px, 540px); }
+    .portal-header { min-height: 66px; }
+    .brand { font-size: 27px; gap: 8px; }
+    .brand svg { width: 29px; height: 29px; }
+    .portal-main { grid-template-columns: 1fr; gap: 25px; padding: 30px 0; }
+    .eyebrow { margin-bottom: 13px; }
+    .intro-copy { margin: 15px 0 22px; }
+    .wide-only { display: none; }
+    .portal-access { max-width: none; }
+    .portal-visual { border-radius: 15px; }
+}
 
+@media (max-width: 360px) {
+    .portal { width: calc(100% - 32px); }
+    h1 { font-size: 29px; }
+    .access-link { gap: 10px; padding-inline: 12px; }
 }
