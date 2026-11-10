@@ -84,7 +84,7 @@ export default {
         }
         const slug = url.searchParams.get("slug");
         const percent = url.searchParams.get("percent");
-        if (!slug || slug.length > 200 || !/^(?:[1-9]0|100)$/.test(percent ?? "")) {
+        if (!slug || slug.length > 200 || !/^(?:5|[1-9]0|100)$/.test(percent ?? "")) {
             return new Response("Invalid model or scale", { status: 400 });
         }
 
