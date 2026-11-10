@@ -57,6 +57,12 @@ a { color: inherit; }
     padding: clamp(36px, 6vw, 76px) 0;
 }
 
+.portal-intro {
+    width: 100%;
+    max-width: 460px;
+    container-type: inline-size;
+}
+
 .eyebrow {
     display: flex;
     align-items: center;
@@ -73,7 +79,8 @@ a { color: inherit; }
 h1 {
     margin: 0;
     font-family: "Yu Mincho", "Hiragino Mincho ProN", "MS PMincho", serif;
-    font-size: clamp(32px, 4.3vw, 61px);
+    font-size: clamp(28px, 3.7vw, 50px);
+    font-size: min(50px, 10.9cqi);
     font-weight: 700;
     line-height: 1.27;
     letter-spacing: .015em;
@@ -171,6 +178,5 @@ a:focus-visible { outline: 3px solid var(--copper); outline-offset: 4px; }
 
 @media (max-width: 360px) {
     .portal { width: calc(100% - 32px); }
-    h1 { font-size: 29px; }
     .access-link { gap: 10px; padding-inline: 12px; }
 }
