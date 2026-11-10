@@ -12,7 +12,7 @@
     <title>お客様ログイン</title>
 
     <link rel="stylesheet" href="css/common.css?v=mobile-return">
-    <link rel="stylesheet" href="css/client-login.css?v=password-recovery">
+    <link rel="stylesheet" href="css/client-login.css?v=qrie-brand">
 
 </head>
 
@@ -22,12 +22,11 @@
 
     <div class="login-card">
 
-        <div class="logo">
-            🏠
-        </div>
-
-        <div class="page-label">
-            AR Housing
+        <div class="login-brand">
+            <svg viewBox="0 0 36 36" aria-hidden="true">
+                <path d="M4 12V4h8m12 0h8v8m0 12v8h-8m-12 0H4v-8M11 17l7-6 7 6v8H11z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>QRIE <small>キュリエ</small></span>
         </div>
 
         <h1>
@@ -38,15 +37,11 @@
             お客様ポータルへログインしてください。
         </p>
 
-        <input
-            id="email"
-            type="email"
-            placeholder="メールアドレス">
+        <label class="login-field" for="email">メールアドレス</label>
+        <input id="email" type="email" autocomplete="email">
 
-        <input
-            id="password"
-            type="password"
-            placeholder="パスワード">
+        <label class="login-field" for="password">パスワード</label>
+        <input id="password" type="password" autocomplete="current-password">
 
         <button id="loginButton">
             ログイン
