@@ -7,6 +7,7 @@
     --muted: #4f6076;
     --copper: #945122;
     --line: #d9e1eb;
+    --intro-width: 460px;
 }
 
 * { box-sizing: border-box; }
@@ -59,7 +60,7 @@ a { color: inherit; }
 
 .portal-intro {
     width: 100%;
-    max-width: 460px;
+    max-width: var(--intro-width);
     container-type: inline-size;
 }
 
@@ -93,7 +94,7 @@ h1 {
     line-height: 1.9;
 }
 
-.portal-access { display: grid; gap: 11px; max-width: 460px; }
+.portal-access { display: grid; gap: 11px; max-width: var(--intro-width); }
 
 .access-link {
     display: grid;
@@ -173,7 +174,7 @@ a:focus-visible { outline: 3px solid var(--copper); outline-offset: 4px; }
     .eyebrow { margin-bottom: 13px; }
     .intro-copy { margin: 15px 0 22px; }
     .wide-only { display: none; }
-    .portal-access { max-width: none; }
+    .portal-visual { width: min(100%, var(--intro-width)); }
 }
 
 @media (max-width: 360px) {
