@@ -165,7 +165,7 @@ function renderProjects(projects) {
             <div class="project-card">
 
                 ${project.thumbnail_url ? `
-                    <img src="${project.thumbnail_url}">
+                    <img src="${project.thumbnail_url}" alt="" loading="lazy">
                 ` : ""}
 
                 <div class="project-content">
@@ -174,15 +174,14 @@ function renderProjects(projects) {
                         ${project.name}
                     </div>
 
-                    <div>
-                        Status:
-                        ${project.status}
-                    </div>
+                    <span class="project-status">
+                        ${project.status === "active" ? "公開中" : "非公開"}
+                    </span>
 
                     <div class="project-actions">
 
                         <button onclick="projectQr('${project.id}')">
-                            QR
+                            QRコード
                         </button>
 
                         <button onclick="projectAnalytics('${project.id}')">
