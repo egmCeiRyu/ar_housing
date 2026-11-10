@@ -107,7 +107,7 @@ export default {
 
             const headers = { "Content-Type": "model/gltf-binary", "Cache-Control": "private, no-store" };
             if (request.method === "HEAD") return new Response(null, { headers });
-            const asset = await fetch(source, { redirect: "error" });
+            const asset = await fetch(source, { redirect: "manual" });
             if (!asset.ok || !asset.body) throw new Error("Model download failed");
             return new Response(await scaleGlb(asset.body, Number(percent) / 100), { headers });
         } catch (error) {
