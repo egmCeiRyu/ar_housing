@@ -284,53 +284,12 @@ async function saveClient() {
 
     } else {
 
-        const { data: existingClients, error: countError } =
-        await supabaseClient
-            .from("clients")
-            .select("client_folder");
-
-        if (countError) {
-            console.error(countError);
-            alert(countError.message);
-
-            saveClientBtn.disabled = false;
-            saveClientBtn.innerText = "保存";
-            return;
-        }
-
-        const nextNumber =
-        (existingClients || []).length + 1;
-
-        const clientFolder =
-        `client_${String(nextNumber).padStart(3, "0")}`;
-
-        const { data: newClient, error: insertError } =
-        await supabaseClient
-            .from("clients")
-            .insert({
-                company_name: companyName,
-                contact_name: contactName,
-                email: email,
-                client_folder: clientFolder
-            })
-            .select()
-            .single();
-
-        if (insertError) {
-            console.error(insertError);
-            alert(insertError.message);
-
-            saveClientBtn.disabled = false;
-            saveClientBtn.innerText = "保存";
-            return;
-        }
-
         const response =
         await supabaseClient.functions.invoke(
             "create-client-user",
             {
                 body: {
-                    clientId: newClient.id,
+                    contactName: contactName,
                     email: email,
                     companyName: companyName
                 }
@@ -340,8 +299,8 @@ async function saveClient() {
         const { data, error } =
         response;
 
-        if (error || data?.error) {
-            console.error(error || data.error);
+        if (error || !data?.success) {
+            console.error(error || data?.error);
 
             alert(
                 "ログインユーザーを作成できませんでした。\n\n" +
