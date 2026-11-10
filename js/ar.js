@@ -381,6 +381,10 @@ openAR.addEventListener("click", async () => {
         viewer.scale = "1 1 1";
         console.error("AR activation failed:", error);
         alert("ARを起動できませんでした。");
+    } finally {
+        if (arMode !== "webxr") {
+            viewer.scale = "1 1 1";
+        }
     }
 });
 viewer.addEventListener("ar-status", ({ detail: { status } }) => {
