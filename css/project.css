@@ -6,7 +6,7 @@
 
     background:white;
 
-    border-radius:16px;
+    border-radius:0;
 
     padding:24px;
 
@@ -33,7 +33,7 @@
 
     border:1px solid #ddd;
 
-    border-radius:8px;
+    border-radius:0;
 }
 
 #saveBtn{
@@ -48,7 +48,7 @@
 
     padding:12px 20px;
 
-    border-radius:8px;
+    border-radius:0;
 
     cursor:pointer;
 
@@ -66,13 +66,13 @@
     background:#10b981;
     color:white;
     padding:12px 20px;
-    border-radius:8px;
+    border-radius:0;
     cursor:pointer;
     font-weight:600;
 }
 
 .header{
-    border-radius:28px;
+    border-radius:0;
     justify-content:center;
 }
 
@@ -102,13 +102,13 @@
     padding:12px;
 
     background:#f5f7fb;
-    border-radius:10px;
+    border-radius:0;
 }
 
 .color-preview{
     width:28px;
     height:28px;
-    border-radius:50%;
+    border-radius:0;
     border:1px solid #ddd;
 }
 
@@ -136,7 +136,7 @@
     height:60px;
 
     border:3px solid #e5e7eb;
-    border-radius:14px;
+    border-radius:0;
 
     padding:4px;
 
@@ -147,7 +147,7 @@
 
 #colorPicker::-webkit-color-swatch{
     border:none;
-    border-radius:10px;
+    border-radius:0;
 }
 
 #colorPicker::-webkit-color-swatch-wrapper{
@@ -170,7 +170,7 @@
     width:72px;
     height:72px;
     border:none;
-    border-radius:18px;
+    border-radius:0;
     cursor:pointer;
 }
 
@@ -178,7 +178,7 @@
     width:140px;
     height:42px;
     border:1px solid #d1d5db;
-    border-radius:10px;
+    border-radius:0;
     padding:0 12px;
     font-size:15px;
     font-weight:700;
@@ -208,7 +208,7 @@
 
 .drop-zone {
     border: 2px dashed #b8c4d6;
-    border-radius: 16px;
+    border-radius: 0;
     padding: 24px;
     margin: 12px 0 18px;
     text-align: center;

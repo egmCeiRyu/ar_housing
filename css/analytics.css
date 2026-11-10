@@ -33,7 +33,7 @@ body{
 
 .stat-card{
     background:#fff;
-    border-radius:22px;
+    border-radius:0;
     padding:22px;
     box-shadow:0 12px 30px rgba(15,23,42,.10);
 }
@@ -54,7 +54,7 @@ body{
 
 .analytics-card{
     background:#fff;
-    border-radius:22px;
+    border-radius:0;
     padding:22px;
     margin-bottom:18px;
     box-shadow:0 12px 30px rgba(15,23,42,.10);

@@ -25,7 +25,7 @@ body{
 #newProjectBtn{
     padding:12px 20px;
     border:none;
-    border-radius:10px;
+    border-radius:0;
     cursor:pointer;
 }
 
@@ -39,7 +39,7 @@ body{
 
 .project-card{
     background:white;
-    border-radius:16px;
+    border-radius:0;
     overflow:hidden;
 
     box-shadow:0 4px 16px rgba(0,0,0,.08);
@@ -79,7 +79,7 @@ body{
     flex: 1;
 
     border: none;
-    border-radius: 8px;
+    border-radius: 0;
 
     padding: 10px;
 
@@ -124,7 +124,7 @@ body{
     background: #2563eb;
     color: white;
     padding: 10px 16px;
-    border-radius: 8px;
+    border-radius: 0;
     cursor: pointer;
     font-weight: 600;
 }
@@ -137,7 +137,7 @@ body{
 
     background:white;
 
-    border-radius:16px;
+    border-radius:0;
 
     padding:24px;
 
@@ -167,7 +167,7 @@ body{
 
     border:1px solid #ddd;
 
-    border-radius:8px;
+    border-radius:0;
 
 }
 
@@ -183,7 +183,7 @@ body{
 
     padding:12px 20px;
 
-    border-radius:8px;
+    border-radius:0;
 
     cursor:pointer;
 

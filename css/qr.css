@@ -8,7 +8,7 @@ body{
     padding:26px 22px;
 
     background:#fff;
-    border-radius:26px;
+    border-radius:0;
 
     box-shadow:0 18px 45px rgba(15,23,42,.12);
 }
@@ -49,13 +49,13 @@ body{
 
     background:#f8fafc;
     border:1px solid #e5e7eb;
-    border-radius:24px;
+    border-radius:0;
 }
 
 #qrImage{
     width:100%;
     display:block;
-    border-radius:16px;
+    border-radius:0;
 }
 
 .qr-label{
@@ -74,7 +74,7 @@ body{
     padding:0 14px;
 
     border:1px solid #d1d5db;
-    border-radius:14px;
+    border-radius:0;
 
     background:#f8fafc;
     color:#334155;
@@ -94,7 +94,7 @@ body{
     height:48px;
 
     border:none;
-    border-radius:999px;
+    border-radius:0;
 
     font-size:15px;
     font-weight:800;
@@ -133,7 +133,7 @@ body{
     height:44px;
 
     border:none;
-    border-radius:999px;
+    border-radius:0;
 
     background:#fff;
 
