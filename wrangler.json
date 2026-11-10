@@ -1,0 +1,16 @@
+{
+  "name": "qrie-ar-scale-test",
+  "main": "ar-model-worker.mjs",
+  "compatibility_date": "2026-11-10",
+  "assets": {
+    "directory": "./.cloudflare-static",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/ar-model.glb"
+    ]
+  },
+  "vars": {
+    "SUPABASE_URL": "https://vwlevkuhenymqrlhlwdf.supabase.co",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_xt00-kBah5vzNhpUNsz1vw_gXzgmL9e"
+  }
+}

@@ -5,7 +5,9 @@ const selectedColor = params.get("color");
 
 const viewer = document.getElementById("viewer");
 const loading = document.getElementById("loading");
-const customArButton = document.getElementById("customArButton");
+const arScale = document.getElementById("arScale");
+const openAR = document.getElementById("openAR");
+let arMode = "scene-viewer";
 
 let currentProject = null;
 let currentSessionId = null;
@@ -21,6 +23,12 @@ const requiredMaterials = [
     "window",
     "door"
 ];
+
+if (params.has("arUnavailable")) {
+    alert("この端末ではARを起動できませんでした。");
+    params.delete("arUnavailable");
+    history.replaceState(null, "", location.pathname + (params.size ? "?" + params : "") + location.hash);
+}
 
 loadAR();
 
@@ -59,6 +67,7 @@ async function loadAR() {
         loading.style.display = "none";
 
         validateMaterials();
+        void configureAR();
 
         if (selectedColor && project.editable_material) {
             applyMaterialColor(
@@ -330,18 +339,52 @@ function selectViewerColor(colorCode, button) {
     button.classList.add("active");
 }
 
-customArButton.addEventListener("click", async () => {
-
-    if (!viewer.src) {
-        console.warn("Model source not loaded yet");
-        return;
+async function configureAR() {
+    if (document.createElement("a").relList.supports("ar")) {
+        arMode = "quick-look";
+    } else if (await navigator.xr?.isSessionSupported("immersive-ar").catch(() => false)) {
+        arMode = "webxr";
     }
 
+    viewer.setAttribute("ar-modes", arMode);
+    arScale.disabled = false;
+    openAR.disabled = false;
+}
+
+openAR.addEventListener("click", async () => {
+    const scale = arScale.value;
+    if (arMode === "scene-viewer" && scale !== "1" && /Android/i.test(navigator.userAgent)) {
+        const modelUrl = new URL("/ar-model.glb", location.origin);
+        modelUrl.searchParams.set("slug", slug);
+        modelUrl.searchParams.set("percent", String(Math.round(Number(scale) * 100)));
+
+        const parameters = new URLSearchParams({
+            file: modelUrl.href,
+            mode: "ar_preferred",
+            resizable: "false"
+        });
+        const fallback = new URL(location.href);
+        fallback.searchParams.set("arUnavailable", "1");
+        location.href = "intent://arvr.google.com/scene-viewer/1.2?" + parameters +
+            "#Intent;scheme=https;package=com.google.android.googlequicksearchbox;" +
+            "action=android.intent.action.VIEW;S.browser_fallback_url=" +
+            encodeURIComponent(fallback.href) + ";end;";
+        return;
+    }
+    viewer.scale = [scale, scale, scale].join(" ");
     try {
         await viewer.activateAR();
     } catch (error) {
+        viewer.scale = "1 1 1";
         console.error("AR activation failed:", error);
         alert("ARを起動できませんでした。");
+    }
+});
+viewer.addEventListener("ar-status", ({ detail: { status } }) => {
+    const active = status === "session-started" || status === "object-placed";
+    document.body.classList.toggle("webxr-active", active);
+    if (status === "not-presenting" || status === "failed") {
+        viewer.scale = "1 1 1";
     }
 });
 

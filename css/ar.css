@@ -19,69 +19,6 @@ body{
     z-index:1000;
 }
 
-#customArButton{
-    position:absolute;
-    left:50%;
-    bottom:28px;
-    transform:translateX(-50%);
-
-    border:none;
-    border-radius:999px;
-
-    background:#111827;
-    color:#fff;
-
-    font-size:16px;
-    font-weight:700;
-
-    padding:14px 28px;
-
-    box-shadow:
-    0 8px 24px rgba(0,0,0,.25);
-
-    cursor:pointer;
-}
-
-#customArButton{
-    position:absolute;
-    left:50%;
-    bottom:28px;
-    transform:translateX(-50%);
-    z-index:10;
-
-    border:none;
-    border-radius:999px;
-
-    background:#111827;
-    color:#fff;
-
-    font-size:16px;
-    font-weight:700;
-
-    padding:14px 30px;
-
-    box-shadow:0 8px 24px rgba(0,0,0,.25);
-}
-
-#customArButton{
-    position:fixed;
-    left:50%;
-    bottom:28px;
-    transform:translateX(-50%);
-    z-index:9999;
-
-    border:none;
-    border-radius:999px;
-    background:#111827;
-    color:#fff;
-
-    font-size:16px;
-    font-weight:700;
-    padding:14px 30px;
-
-    box-shadow:0 8px 24px rgba(0,0,0,.25);
-}
-
 #backBtn{
     position:fixed;
     top:calc(16px + env(safe-area-inset-top));
@@ -120,11 +57,10 @@ body{
 }
 
 #colorBar{
-    position:fixed;
-    left:50%;
-    bottom:96px;
-    transform:translateX(-50%);
     display:flex;
+    max-width:100%;
+    box-sizing:border-box;
+    overflow-x:auto;
     gap:10px;
     padding:10px 14px;
     background:rgba(255,255,255,.95);
@@ -170,3 +106,59 @@ body{
 #emailClientButton:hover{ background:#eef2f7; }
 #emailClientButton:focus-visible{ outline:3px solid #2563eb; outline-offset:4px; }
 body #loading{ top:calc(76px + env(safe-area-inset-top, 0px)); }
+
+#viewerControls{
+    position:fixed;
+    left:50%;
+    bottom:calc(28px + env(safe-area-inset-bottom, 0px));
+    transform:translateX(-50%);
+    z-index:9999;
+    display:grid;
+    justify-items:center;
+    gap:12px;
+    max-width:calc(100vw - 32px);
+}
+
+#colorBar:empty{
+    display:none;
+}
+
+#arActions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    background:#fff;
+    border-radius:16px;
+    white-space:nowrap;
+}
+
+#arScale,
+#openAR{
+    min-height:44px;
+    padding:0 12px;
+    font:inherit;
+    font-size:16px;
+    border-radius:10px;
+}
+
+#arScale{
+    background:#fff;
+    color:#111827;
+    border:1px solid #6b7280;
+}
+
+#openAR{
+    border:0;
+    background:#111827;
+    color:#fff;
+    font-weight:700;
+}
+
+#openAR:disabled{
+    opacity:.5;
+}
+
+.webxr-active #viewerControls{
+    display:none;
+}
