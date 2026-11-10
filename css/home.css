@@ -95,7 +95,6 @@ h1 {
     gap: 14px;
     padding: 15px 18px;
     border: 1px solid var(--line);
-    border-radius: 12px;
     text-decoration: none;
 }
 
@@ -125,7 +124,6 @@ a:focus-visible { outline: 3px solid var(--copper); outline-offset: 4px; }
     position: relative;
     margin: 0;
     overflow: hidden;
-    border-radius: 22px;
     background: #dce6ed;
     box-shadow: 0 14px 36px #142e541c;
 }
@@ -136,7 +134,6 @@ a:focus-visible { outline: 3px solid var(--copper); outline-offset: 4px; }
     bottom: 16px;
     left: 16px;
     padding: 8px 11px;
-    border-radius: 7px;
     background: var(--ink);
     color: white;
     font-size: 11px;
@@ -148,7 +145,6 @@ a:focus-visible { outline: 3px solid var(--copper); outline-offset: 4px; }
     width: 6px;
     height: 6px;
     margin-right: 4px;
-    border-radius: 50%;
     background: #e4a66f;
 }
 
@@ -171,7 +167,6 @@ a:focus-visible { outline: 3px solid var(--copper); outline-offset: 4px; }
     .intro-copy { margin: 15px 0 22px; }
     .wide-only { display: none; }
     .portal-access { max-width: none; }
-    .portal-visual { border-radius: 15px; }
 }
 
 @media (max-width: 360px) {
