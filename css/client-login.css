@@ -154,3 +154,12 @@ input:focus {
 }
 
 #togglePassword:active { background: #e9eff7; }
+
+.admin-login .login-card,
+.admin-login .login-brand svg,
+.admin-login .login-card input,
+.admin-login #loginButton,
+.admin-login #togglePassword,
+.admin-login .return-link--login {
+    border-radius: 0;
+}
