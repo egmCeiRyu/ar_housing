@@ -200,7 +200,7 @@ function renderProjects(projects) {
 function projectQr(id) {
 
     window.open(
-        `qr.html?id=${id}`,
+        `qr.html?from=client&id=${encodeURIComponent(id)}`,
         "_blank"
     );
 }

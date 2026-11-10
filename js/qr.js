@@ -9,33 +9,42 @@ initializePage();
 
 async function initializePage() {
 
-    const ok =
-    await requireAdmin();
-
-    if (!ok) return;
-
-    if (!projectId) {
-        alert("プロジェクトIDがありません。");
-        window.location.href = "index.html";
+    const { data, error } = await supabaseClient.auth.getUser();
+    const user = data?.user;
+    if (error || !user) {
+        const loginPage = params.get("from") === "client" ? "client-login.html" : "admin-login.html";
+        window.location.replace(loginPage);
         return;
     }
 
-    loadProject();
-}
+    const isAdmin = user.app_metadata?.role === "admin";
+    const returnPage = isAdmin ? "index.html" : "client-portal.html";
+    if (!projectId) {
+        window.location.replace(returnPage);
+        return;
+    }
 
-async function loadProject() {
+    const query = supabaseClient.from("properties").select("name, slug").eq("id", projectId);
+    if (!isAdmin) {
+        const { data: client, error: clientError } = await supabaseClient
+            .from("clients")
+            .select("id")
+            .eq("auth_user_id", user.id)
+            .maybeSingle();
 
-    const { data: project, error } =
-    await supabaseClient
-        .from("properties")
-        .select("*")
-        .eq("id", projectId)
-        .single();
+        if (clientError || !client) {
+            if (clientError) console.error(clientError);
+            window.location.replace(returnPage);
+            return;
+        }
+        query.eq("client_id", client.id);
+    }
 
-    if (error || !project) {
-        console.error(error);
+    const { data: project, error: projectError } = await query.maybeSingle();
+    if (projectError || !project) {
+        if (projectError) console.error(projectError);
         alert("プロジェクトが見つかりません。");
-        window.location.href = "home.html";
+        window.location.replace(returnPage);
         return;
     }
 
