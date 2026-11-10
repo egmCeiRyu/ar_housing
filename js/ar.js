@@ -354,7 +354,10 @@ async function configureAR() {
 openAR.addEventListener("click", async () => {
     const scale = arScale.value;
     if (arMode === "scene-viewer" && scale !== "1" && /Android/i.test(navigator.userAgent)) {
-        const modelUrl = new URL("/ar-model.glb", location.origin);
+        const modelOrigin = location.hostname === "egmceiryu.github.io"
+            ? "https://qrie.ceiryu.workers.dev"
+            : location.origin;
+        const modelUrl = new URL("/ar-model.glb", modelOrigin);
         modelUrl.searchParams.set("slug", slug);
         modelUrl.searchParams.set("percent", String(Math.round(Number(scale) * 100)));
 

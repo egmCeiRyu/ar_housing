@@ -1,5 +1,5 @@
 {
-  "name": "qrie-ar-scale-test",
+  "name": "qrie",
   "main": "ar-model-worker.mjs",
   "compatibility_date": "2026-11-10",
   "assets": {
