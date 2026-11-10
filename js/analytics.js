@@ -1,72 +1,42 @@
-const params =
-new URLSearchParams(window.location.search);
-
-const projectId =
-params.get("id");
+const params = new URLSearchParams(window.location.search);
+const projectId = params.get("id");
+const fromClientPortal = params.get("from") === "client";
 
 initializePage();
 
 async function initializePage() {
+    const { data, error } = await supabaseClient.auth.getUser();
+    if (error || !data?.user) {
+        window.location.replace(fromClientPortal ? "client-login.html" : "home.html");
+        return;
+    }
 
-    const ok =
-    await requireAdmin();
-
-    if (!ok) return;
+    const returnPage = data.user.app_metadata?.role === "admin"
+        ? "index.html"
+        : "client-portal.html";
+    document.getElementById("analyticsBack").href = returnPage;
 
     if (!projectId) {
-        alert("プロジェクトIDがありません。");
-        window.location.href = "index.html";
+        window.location.replace(returnPage);
         return;
     }
 
-    await loadAnalytics();
+    const { data: report, error: reportError } = await supabaseClient.rpc(
+        "get_property_analytics",
+        { requested_property_id: projectId }
+    );
+    if (reportError || !report) {
+        if (reportError) console.error(reportError);
+        document.getElementById("projectName").innerText =
+            reportError ? "分析データを読み込めませんでした。" : "この物件の分析データを表示できません。";
+        document.getElementById("analyticsReport").hidden = true;
+        return;
+    }
+
+    document.getElementById("projectName").innerText = report.project_name;
+    renderAnalytics(report.views, report.sessions);
 }
 
-async function loadAnalytics() {
-
-    const { data: project, error: projectError } =
-    await supabaseClient
-        .from("properties")
-        .select("*")
-        .eq("id", projectId)
-        .single();
-
-    if (projectError || !project) {
-        console.error(projectError);
-        alert("プロジェクトが見つかりません。");
-        window.location.href = "index.html";
-        return;
-    }
-
-    document.getElementById("projectName").innerText =
-    project.name;
-
-    const { data: views, error: viewsError } =
-    await supabaseClient
-        .from("page_views")
-        .select("*")
-        .eq("property_id", projectId);
-
-    if (viewsError) {
-        console.error(viewsError);
-        alert(viewsError.message);
-        return;
-    }
-
-    const { data: sessions, error: sessionsError } =
-    await supabaseClient
-        .from("ar_sessions")
-        .select("*")
-        .eq("property_id", projectId);
-
-    if (sessionsError) {
-        console.error(sessionsError);
-        alert(sessionsError.message);
-        return;
-    }
-
-    renderAnalytics(views || [], sessions || []);
-}
 
 function renderAnalytics(views, sessions) {
 

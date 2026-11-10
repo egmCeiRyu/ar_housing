@@ -209,5 +209,5 @@ function projectQr(id) {
 function projectAnalytics(id) {
 
     location.href =
-    `analytics.html?id=${id}`;
+    `analytics.html?from=client&id=${id}`;
 }
