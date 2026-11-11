@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Enviar móveis ao S3</title>
+<link rel="stylesheet" href="css/common.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase.js"></script><script src="js/auth.js"></script>
+<script defer src="js/furniture-upload.js"></script></head>
+<body><main style="max-width:800px;margin:40px auto;padding:20px"><h1>Enviar móveis ao S3</h1>
+<p>Selecione os seis modelos GLB do catálogo de móveis.</p><input id="models" type="file" accept=".glb" multiple disabled>
+<button id="upload" disabled>Enviar ao S3</button><p id="status" role="status">Verificando acesso de administrador…</p><ul id="results"></ul></main></body></html>
