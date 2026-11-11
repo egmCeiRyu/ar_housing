@@ -70,9 +70,6 @@ document.getElementById("openArBtn").addEventListener("click", () => {
         return;
     }
 
-    const url =
-    `ar.html?slug=${currentProject.slug}&color=${encodeURIComponent(selectedColor || "")}`;
-
-    location.href = url;
+    window.location.assign(getViewerUrl(currentProject.slug, selectedColor));
 });
 

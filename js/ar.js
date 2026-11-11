@@ -56,11 +56,8 @@ async function loadAR() {
 
     void loadClientEmail(project);
 
-    await loadColorButtons(project.id);
-    await savePageView(project.id);
-    await startARSession(project.id);
-
-    viewer.src = project.glb_url;
+    void loadColorButtons(project.id).catch(console.error);
+    void savePageView(project.id).then(() => startARSession(project.id)).catch(console.error);
 
     viewer.addEventListener("load", () => {
 
@@ -75,7 +72,13 @@ async function loadAR() {
                 selectedColor
             );
         }
+    }, { once: true });
+    viewer.addEventListener("error", ({ detail }) => {
+        if (detail?.type === "loadfailure") {
+            loading.innerText = "3Dモデルを読み込めませんでした。";
+        }
     });
+    viewer.setAttribute("src", project.glb_url);
 }
 
 async function loadClientEmail(project) {
@@ -374,6 +377,10 @@ openAR.addEventListener("click", async () => {
             encodeURIComponent(fallback.href) + ";end;";
         return;
     }
+    if (!viewer.canActivateAR) {
+        alert("ARを起動できません。iPhoneではSafari、AndroidではChromeでこのページを開いてください。");
+        return;
+    }
     viewer.scale = [scale, scale, scale].join(" ");
     try {
         await viewer.activateAR();
@@ -390,6 +397,9 @@ openAR.addEventListener("click", async () => {
 viewer.addEventListener("ar-status", ({ detail: { status } }) => {
     const active = status === "session-started" || status === "object-placed";
     document.body.classList.toggle("webxr-active", active);
+    if (status === "failed") {
+        alert("ARを起動できませんでした。");
+    }
     if (status === "not-presenting" || status === "failed") {
         viewer.scale = "1 1 1";
     }

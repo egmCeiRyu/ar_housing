@@ -53,8 +53,7 @@ async function initializePage() {
         .innerText =
         project.name;
 
-    const arUrl =
-    `${VIEWER_URL}?slug=${project.slug}`;
+    const arUrl = getViewerUrl(project.slug);
 
     document
         .getElementById("projectUrl")

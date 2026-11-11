@@ -419,24 +419,12 @@ async function deleteColor(id) {
 
 function openViewer() {
 
-    const name =
-    document
-        .getElementById("name")
-        .value
-        .trim();
-
-    if (!name) {
+    if (!currentProject?.slug) {
         alert("先にプロジェクトを保存してください。");
         return;
     }
 
-    const slug =
-    createSlug(name);
-
-    window.open(
-        `ar.html?slug=${slug}`,
-        "_blank"
-    );
+    window.location.assign(getViewerUrl(currentProject.slug));
 }
 
 function openQrPage() {
