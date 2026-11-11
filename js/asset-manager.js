@@ -112,7 +112,12 @@ function upload(url,blob,contentType,progress) {
         const request=new XMLHttpRequest(); request.open('PUT',url); request.timeout=300000;
         request.setRequestHeader('Content-Type',contentType);
         request.upload.onprogress=event=>{if(event.lengthComputable)progress(event.loaded/event.total);};
-        request.onload=()=>request.status>=200&&request.status<300?resolve():reject(new Error('S3 へのアップロードに失敗しました。'));
+        request.onload=()=>{
+            if(request.status>=200&&request.status<300) { resolve(); return; }
+            const xml=new DOMParser().parseFromString(request.responseText,'application/xml');
+            const code=xml.querySelector('Code')?.textContent?.slice(0,80)||'UploadFailed';
+            reject(new Error('S3 ('+request.status+'): '+code+'。アップロードできませんでした。'));
+        };
         request.onerror=request.ontimeout=()=>reject(new Error('アップロードが中断されました。接続を確認してください。'));
         request.send(blob);
     });
