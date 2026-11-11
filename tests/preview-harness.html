@@ -1,0 +1,9 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>アセットプレビュー検証</title><style>body{font:16px system-ui;max-width:600px;margin:30px auto;padding:20px}#preview{width:min(100%,400px);height:400px;background:#edf1f5}canvas{width:100%;height:100%}</style><h1>アセットプレビュー検証</h1><input id="file" type="file" accept=".glb,.png,.jpg,.webp"><div id="preview"></div><p id="status" role="status">ファイルを選択してください</p><script type="importmap">{"imports":{"three":"../vendor/three/build/three.module.js","three/addons/":"../vendor/three/examples/jsm/"}}</script><script type="module">
+import {createAssetPreview} from '../js/asset-preview.js';
+let current;
+document.querySelector('#file').addEventListener('change',async event=>{
+ current?.dispose();document.querySelector('#status').textContent='処理中…';
+ try{current=await createAssetPreview(event.target.files[0],document.querySelector('#preview'));document.querySelector('#status').textContent=JSON.stringify({type:current.type,width:current.width,height:current.height,depth:current.depth,thumbnailType:current.thumbnail.type,thumbnailBytes:current.thumbnail.size,details:current.details});}
+ catch(error){document.querySelector('#status').textContent=error.message;}
+});
+</script></html>

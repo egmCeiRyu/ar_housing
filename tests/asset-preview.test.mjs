@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import { registerHooks } from 'node:module';
+import { pathToFileURL } from 'node:url';
+import path from 'node:path';
+const root=path.resolve('.');
+registerHooks({resolve(specifier,context,nextResolve){
+ if(specifier==='three')return {url:pathToFileURL(path.join(root,'vendor/three/build/three.module.js')).href,shortCircuit:true};
+ if(specifier.startsWith('three/addons/'))return {url:pathToFileURL(path.join(root,'vendor/three/examples/jsm',specifier.slice(13))).href,shortCircuit:true};
+ return nextResolve(specifier,context);
+}});
+const THREE=await import('three');
+const {normalizePivot}=await import('../js/asset-preview.js');
+const source=new THREE.Group(); source.position.set(5,-3,8);source.rotation.y=.62;source.scale.set(2,1.5,.7);
+const nested=new THREE.Group();nested.position.set(1,2,3);nested.rotation.z=.2;
+const mesh=new THREE.Mesh(new THREE.BoxGeometry(2,4,3),new THREE.MeshStandardMaterial());mesh.position.set(1,1,-2);nested.add(mesh);source.add(nested);
+source.updateWorldMatrix(true,true);
+const before=new THREE.Box3().setFromObject(source,true).getSize(new THREE.Vector3());
+const transform={position:source.position.toArray(),quaternion:source.quaternion.toArray(),scale:source.scale.toArray()};
+const result=normalizePivot(source);
+const box=new THREE.Box3().setFromObject(result.pivot,true),center=box.getCenter(new THREE.Vector3()),after=box.getSize(new THREE.Vector3());
+assert(Math.abs(box.min.y)<1e-6);assert(Math.abs(center.x)<1e-6);assert(Math.abs(center.z)<1e-6);
+assert(before.distanceTo(after)<1e-6);
+assert.deepEqual(source.position.toArray(),transform.position);assert.deepEqual(source.quaternion.toArray(),transform.quaternion);assert.deepEqual(source.scale.toArray(),transform.scale);
+assert.throws(()=>normalizePivot(new THREE.Group()));
+console.log('PASS: bottom-center pivot, physical size, nested transforms and orientation preservation.');

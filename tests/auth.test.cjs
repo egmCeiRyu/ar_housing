@@ -22,7 +22,10 @@ const source = fs.readFileSync('js/auth.js', 'utf8');
   assert.equal(await context.requireAdmin(),false);
   for(const file of fs.readdirSync('js').filter(f=>f.endsWith('.js'))) {
     const text=fs.readFileSync('js/'+file,'utf8');
-    new vm.Script(text,{filename:file});
+    if (/^\s*(import|export)\s/m.test(text)) {
+      const result = require('node:child_process').spawnSync(process.execPath,['--input-type=module','--check'],{input:text,encoding:'utf8'});
+      assert.equal(result.status,0,result.stderr);
+    } else new vm.Script(text,{filename:file});
     if (text.includes('await requireAdmin();')) assert(text.includes('if (!ok) return;'),file);
   }
   console.log('PASS: seven authorization cases, redirect behavior, JS syntax and initialization guards.');
