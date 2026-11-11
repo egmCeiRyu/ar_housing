@@ -2,7 +2,7 @@
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Enviar modelos ao S3</title>
 <link rel="stylesheet" href="css/common.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase.js"></script><script src="js/auth.js"></script>
-<script defer src="js/furniture-upload.js?v=house-floors"></script></head>
+<script defer src="js/furniture-upload.js?v=wallpapers"></script></head>
 <body><main style="max-width:800px;margin:40px auto;padding:20px"><h1>Enviar modelos ao S3</h1>
-<p>Selecione os modelos GLB dos móveis ou dos andares.</p><input id="models" type="file" accept=".glb" multiple disabled>
+<p>Selecione os GLBs dos móveis e andares ou os papéis de parede JPEG.</p><input id="models" type="file" accept=".glb,.jpg" multiple disabled>
 <button id="upload" disabled>Enviar ao S3</button><p id="status" role="status">Verificando acesso de administrador…</p><ul id="results"></ul></main></body></html>
