@@ -2,9 +2,10 @@ const modelIds = {
     "squarySofa.glb": "sofa",
     "dinningTable.glb": "table",
     "dinningChair.glb": "chair",
-    "velvetArmChair.glb": "armchair",
     "tvBench.glb": "tvbench",
-    "tv50inch.glb": "tv"
+    "tv50inch.glb": "tv",
+    "house_firstFloor.glb": "first-floor",
+    "house_secondFloor.glb": "second-floor"
 };
 const input = document.getElementById("models");
 const button = document.getElementById("upload");
@@ -21,7 +22,7 @@ button.addEventListener("click", async () => {
     const files = [...input.files];
     if (!files.length) return;
     if (files.some(file => !modelIds[file.name])) {
-        status.textContent = "Selecione apenas os seis arquivos do catálogo.";
+        status.textContent = "Selecione os GLBs cadastrados de móveis ou andares.";
         return;
     }
     button.disabled = true;
@@ -37,7 +38,7 @@ button.addEventListener("click", async () => {
             }
             status.textContent = "Enviando " + file.name + "…";
             const { data, error } = await supabaseClient.functions.invoke("create-s3-upload-url", {
-                body: { clientFolder: "furniture-catalog", projectFolder: id, fileType: "glb" }
+                body: { clientFolder: file.name.startsWith("house_") ? "floor-catalog" : "furniture-catalog", projectFolder: id, fileType: "glb" }
             });
             if (error || !data?.uploadUrl) throw error || new Error("Falha ao autorizar upload");
             const response = await fetch(data.uploadUrl, {
