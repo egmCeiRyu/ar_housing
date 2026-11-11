@@ -168,16 +168,111 @@ $('search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=
 for(const id of ['category-filter','status-filter']) $(id).addEventListener('change',()=>{state.page=0;loadAssets();});
 $('previous-page').addEventListener('click',()=>{if(state.page>0){state.page--;loadAssets();}});
 $('next-page').addEventListener('click',()=>{state.page++;loadAssets();});
+let categoryBusy=false;
+let managedCategories=[];
+let deletingCategory=null;
+function setCategoryBusy(value) {
+    categoryBusy=value;
+    for(const dialog of [$('category-dialog'),$('category-delete-dialog')]) {
+        for(const control of dialog.querySelectorAll('input,select,button')) control.disabled=value;
+    }
+    if(!value&&state.categories.length<=1) for(const button of $('category-list').querySelectorAll('[data-category-delete]')) button.disabled=true;
+}
+function syncCategoryOptions() {
+    const filter=$('category-filter').value, selected=$('asset-category').value;
+    state.categories=managedCategories.filter(category=>!category.archived_at);
+    $('category-filter').replaceChildren(option('','すべてのカテゴリー'));
+    $('asset-category').replaceChildren();
+    for(const category of state.categories) {
+        $('category-filter').append(option(category.id,category.name));
+        $('asset-category').append(option(category.id,category.name));
+    }
+    $('category-filter').value=state.categories.some(category=>category.id===filter)?filter:'';
+    $('asset-category').value=state.categories.some(category=>category.id===selected)?selected:state.categories[0]?.id||'';
+}
+async function refreshManagedCategories() {
+    const result=await api({action:'category_list',include_archived:$('show-archived-categories').checked});
+    managedCategories=result.categories;
+    syncCategoryOptions();
+    $('category-list').replaceChildren();
+    for(const category of managedCategories) {
+        const row=document.createElement('div');row.className='category-row';
+        const label=document.createElement('label');
+        const caption=document.createElement('small');caption.textContent=category.asset_count+' 件'+(category.archived_at?' · 削除済み':'');
+        const input=document.createElement('input');input.value=category.name;input.maxLength=80;input.required=true;
+        input.setAttribute('aria-label','カテゴリー名：'+category.name);
+        label.append(caption,input);row.append(label);
+        const save=document.createElement('button');save.type='button';save.textContent=category.archived_at?'復元':'名前を保存';
+        save.addEventListener('click',()=>{
+            if(!input.reportValidity())return;
+            changeCategory(category.archived_at?'category_restore':'category_rename',{id:category.id,name:input.value},'カテゴリーを保存しました。');
+        });row.append(save);
+        if(!category.archived_at) {
+            const remove=document.createElement('button');remove.type='button';remove.className='danger';remove.textContent='削除';remove.dataset.categoryDelete=category.id;
+            remove.disabled=state.categories.length<=1;
+            remove.addEventListener('click',()=>openCategoryDelete(category));row.append(remove);
+        }
+        $('category-list').append(row);
+    }
+}
+async function changeCategory(action,values,success) {
+    if(categoryBusy)return;
+    setCategoryBusy(true);$('category-notice').textContent='保存しています…';
+    try {
+        await api({action,...values});
+        if(action==='category_create')$('new-category-name').value='';
+        await refreshManagedCategories();state.page=0;await loadAssets();
+        $('category-notice').textContent=success;
+    } catch(error){$('category-notice').textContent=error.message;}
+    finally{setCategoryBusy(false);}
+}
+$('manage-categories').addEventListener('click',async()=>{
+    if(state.busy||categoryBusy)return;
+    $('category-notice').textContent='カテゴリーを読み込んでいます…';$('category-dialog').showModal();setCategoryBusy(true);
+    try {await refreshManagedCategories();$('category-notice').textContent='';}
+    catch(error){$('category-notice').textContent=error.message;}
+    finally{setCategoryBusy(false);}
+});
+function closeCategories(){if(categoryBusy)return;$('category-dialog').close();$('manage-categories').focus();}
+$('close-categories').addEventListener('click',closeCategories);
+$('category-dialog').addEventListener('cancel',event=>{event.preventDefault();closeCategories();});
+$('category-create-form').addEventListener('submit',event=>{event.preventDefault();changeCategory('category_create',{name:$('new-category-name').value},'カテゴリーを追加しました。');});
+$('show-archived-categories').addEventListener('change',async()=>{
+    if(categoryBusy)return;setCategoryBusy(true);
+    try{await refreshManagedCategories();}catch(error){$('category-notice').textContent=error.message;}finally{setCategoryBusy(false);}
+});
+function openCategoryDelete(category) {
+    if(categoryBusy)return;deletingCategory=category;
+    $('category-delete-description').textContent='「'+category.name+'」を削除します。アセット '+category.asset_count+' 件（削除済みを含む）の移動先を確認してください。';
+    $('category-delete-target').replaceChildren(option('',Number(category.asset_count)>0?'移動先を選択':'移動しない（空の場合のみ）'));
+    for(const target of state.categories)if(target.id!==category.id)$('category-delete-target').append(option(target.id,target.name));
+    $('category-delete-target').required=Number(category.asset_count)>0;
+    $('category-delete-notice').textContent='';$('category-delete-dialog').showModal();
+}
+function closeCategoryDelete(){if(categoryBusy)return;$('category-delete-dialog').close();deletingCategory=null;}
+$('cancel-category-delete').addEventListener('click',closeCategoryDelete);
+$('category-delete-dialog').addEventListener('cancel',event=>{event.preventDefault();closeCategoryDelete();});
+$('category-delete-form').addEventListener('submit',async event=>{
+    event.preventDefault();if(categoryBusy||!deletingCategory)return;setCategoryBusy(true);$('category-delete-notice').textContent='保存しています…';
+    try {
+        await api({action:'category_delete',id:deletingCategory.id,target_category_id:$('category-delete-target').value||null});
+        $('category-delete-dialog').close();deletingCategory=null;
+        await refreshManagedCategories();state.page=0;await loadAssets();
+        $('category-notice').textContent='カテゴリーを削除しました。アセットとファイルは保持されています。';
+    } catch(error){$('category-delete-notice').textContent=error.message;}
+    finally{setCategoryBusy(false);}
+});
 try {
     if(await requireAdmin()) {
         const [categories,properties]=await Promise.all([
-            supabaseClient.from('asset_categories').select('id,name').order('sort_order'),
+            supabaseClient.from('asset_categories').select('id,name').is('archived_at',null).order('sort_order'),
             supabaseClient.from('properties').select('id,name').order('name').limit(200)
         ]);
         if(categories.error||properties.error) throw new Error('ライブラリを初期化できませんでした。管理者に連絡してください。');
         state.categories=categories.data;state.projects=properties.data;
         for(const category of state.categories) { $('category-filter').append(option(category.id,category.name));$('asset-category').append(option(category.id,category.name)); }
         $('new-asset').disabled=false;
+        $('manage-categories').disabled=false;
         await loadAssets();
     }
 } catch(error){message(error.message);}

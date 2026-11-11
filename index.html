@@ -6,7 +6,7 @@
 <title>AR Housing Admin</title>
 
 <link rel="stylesheet" href="css/common.css?v=qrie-radius-zero">
-<link rel="stylesheet" href="css/dashboard.css?v=qrie-radius-zero">
+<link rel="stylesheet" href="css/dashboard.css?v=asset-actions">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/config.js"></script>
@@ -32,13 +32,12 @@
             </p>
         </div>
 
-        <button id="newClientBtn" class="new-client-btn">
-            ＋ 新規顧客登録
-        </button>
+        <div class="admin-hero-actions">
+            <button id="newClientBtn" class="new-client-btn">＋ 新規顧客登録</button>
+            <a href="asset-manager.html" class="new-client-btn">アセット管理 →</a>
+        </div>
 
     </section>
-
-    <nav aria-label="管理メニュー" style="margin:18px 0"><a href="asset-manager.html" class="new-client-btn" style="display:inline-flex;text-decoration:none">アセット管理 →</a></nav>
 
     <div id="clientForm" class="modal hidden">
 

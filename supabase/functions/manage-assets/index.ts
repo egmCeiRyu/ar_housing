@@ -31,9 +31,26 @@ serve(async req => {
     try {
         demand(Number(req.headers.get('Content-Length') || 0) <= 32768, 'リクエストが大きすぎます。');
         const body = await req.json();
-        const actions = ['list','begin','complete','update','delete','restore'];
+        const actions = ['list','begin','complete','update','delete','restore','category_list','category_create','category_rename','category_delete','category_restore'];
         demand(actions.includes(body.action), 'Invalid action');
         const db = createClient(Deno.env.get('SUPABASE_URL')!,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+        if (body.action === 'category_list') {
+            const {data,error}=await db.rpc('list_asset_categories',{include_archived:body.include_archived===true});
+            if(error) throw error;
+            return reply({categories:data});
+        }
+        if (body.action.startsWith('category_')) {
+            const operation=body.action.slice(9);
+            const id=operation==='create'?crypto.randomUUID():body.id;
+            demand(typeof id==='string'&&id.length>0&&id.length<=40,'カテゴリーを確認してください。');
+            const name=typeof body.name==='string'?body.name.trim():null;
+            if(operation!=='delete') demand(name&&name.length<=80,'カテゴリー名は1〜80文字で入力してください。');
+            const target=body.target_category_id??null;
+            demand(target===null||(typeof target==='string'&&target.length>0&&target.length<=40),'移動先カテゴリーを確認してください。');
+            const {error}=await db.rpc('manage_asset_category',{operation,category_id:id,category_name:name,target_category_id:target});
+            if(error) return reply({error:error.message},400);
+            return reply({id});
+        }
         const s3 = new S3Client({region:Deno.env.get('AWS_REGION')!,credentials:{accessKeyId:Deno.env.get('AWS_ACCESS_KEY_ID')!,secretAccessKey:Deno.env.get('AWS_SECRET_ACCESS_KEY')!}});
         const bucket = Deno.env.get('AWS_BUCKET_NAME')!;
         const signedRead = (key: string) => getSignedUrl(s3,new GetObjectCommand({Bucket:bucket,Key:key}),{expiresIn:3600});

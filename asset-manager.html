@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>アセット管理 · QRIE</title>
-<link rel="stylesheet" href="css/asset-manager.css?v=1">
+<link rel="stylesheet" href="css/asset-manager.css?v=categories">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script><script src="js/auth.js"></script>
 <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
-<script type="module" src="js/asset-manager.js?v=3"></script>
+<script type="module" src="js/asset-manager.js?v=categories"></script>
 </head>
 <body>
 <header class="topbar"><a class="brand" href="index.html">QRIE <span>管理画面</span></a><a href="index.html">顧客管理へ戻る</a></header>
 <main>
-<section class="page-heading"><div><p class="eyebrow">アセットライブラリ</p><h1>アセット管理</h1><p>家具・壁紙・床材をまとめて管理します。</p></div><button id="new-asset" class="primary" disabled>＋ アセットを追加</button></section>
+<section class="page-heading"><div><p class="eyebrow">アセットライブラリ</p><h1>アセット管理</h1><p>家具・壁紙・床材をまとめて管理します。</p></div><div class="page-actions"><button id="manage-categories" type="button" disabled>カテゴリー管理</button><button id="new-asset" class="primary" disabled>＋ アセットを追加</button></div></section>
 <p id="notice" role="status" aria-live="polite">管理者権限を確認しています…</p>
 <section class="filters" aria-label="検索と絞り込み"><label>検索<input id="search" type="search" placeholder="アセット名で検索"></label><label>カテゴリー<select id="category-filter"><option value="">すべてのカテゴリー</option></select></label><label>状態<select id="status-filter"><option value="">すべて</option><option value="active">有効</option><option value="inactive">無効</option><option value="draft">アップロード未完了</option><option value="deleted">削除済み</option></select></label></section>
 <div class="list-heading"><span id="asset-count">0 件</span><span>全体ライブラリ・管理者専用</span></div>
@@ -29,4 +29,17 @@
 <div class="dialog-actions"><button type="button" id="delete-asset" class="danger" hidden>削除</button><button type="button" id="restore-asset" hidden>復元</button><span></span><button type="button" id="cancel-dialog">キャンセル</button><button id="save-asset" class="primary" type="submit">保存</button></div>
 </form></dialog>
 <dialog id="delete-dialog" aria-labelledby="delete-title"><h2 id="delete-title">アセットを削除しますか？</h2><p>ライブラリから非表示にします。ファイルとプロジェクト設定は保持され、後から復元できます。</p><div class="dialog-actions"><button id="cancel-delete">キャンセル</button><button id="confirm-delete" class="danger">削除する</button></div></dialog>
+<dialog id="category-dialog" aria-labelledby="category-title">
+<div class="dialog-heading"><h2 id="category-title">カテゴリー管理</h2><button id="close-categories" type="button" class="icon-button" aria-label="カテゴリー管理を閉じる">×</button></div>
+<form id="category-create-form" class="category-create"><label>新しいカテゴリー名<input id="new-category-name" required maxlength="80" autocomplete="off" placeholder="例：テレビ"></label><button type="submit" class="primary">追加</button></form>
+<label class="category-archived-toggle"><input id="show-archived-categories" type="checkbox">削除済みも表示</label>
+<p class="hint">アセット数には削除済み・アップロード未完了も含みます。カテゴリーを削除しても、ファイルは削除されません。</p>
+<div id="category-list" aria-label="カテゴリー一覧"></div><p id="category-notice" role="status" aria-live="polite"></p>
+</dialog>
+<dialog id="category-delete-dialog" aria-labelledby="category-delete-title"><form id="category-delete-form">
+<h2 id="category-delete-title">カテゴリーを削除</h2><p id="category-delete-description"></p>
+<label id="category-target-label">アセットの移動先<select id="category-delete-target"><option value="">移動先を選択</option></select></label>
+<p class="hint">削除したカテゴリーは復元できます。移動したアセットは移動先に残ります。</p>
+<p id="category-delete-notice" role="status"></p><div class="dialog-actions"><button id="cancel-category-delete" type="button">キャンセル</button><button class="danger" type="submit">削除する</button></div>
+</form></dialog>
 </body></html>
