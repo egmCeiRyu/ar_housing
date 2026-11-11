@@ -8,6 +8,7 @@ const loading = document.getElementById("loading");
 const arScale = document.getElementById("arScale");
 const openAR = document.getElementById("openAR");
 let arMode = "scene-viewer";
+let arRequested = false;
 
 let currentProject = null;
 let currentSessionId = null;
@@ -59,12 +60,16 @@ async function loadAR() {
     void loadColorButtons(project.id).catch(console.error);
     void savePageView(project.id).then(() => startARSession(project.id)).catch(console.error);
 
+    await customElements.whenDefined("model-viewer");
+    await configureAR();
+
     viewer.addEventListener("load", () => {
 
         loading.style.display = "none";
 
         validateMaterials();
-        void configureAR();
+        arScale.disabled = false;
+        openAR.disabled = false;
 
         if (selectedColor && project.editable_material) {
             applyMaterialColor(
@@ -353,8 +358,6 @@ async function configureAR() {
 
     viewer.setAttribute("ar-modes", arMode);
     await viewer.updateComplete;
-    arScale.disabled = false;
-    openAR.disabled = false;
 }
 
 openAR.addEventListener("click", async () => {
@@ -385,9 +388,12 @@ openAR.addEventListener("click", async () => {
         return;
     }
     viewer.scale = [scale, scale, scale].join(" ");
+    arRequested = true;
     try {
         await viewer.activateAR();
     } catch (error) {
+        if (!arRequested) return;
+        arRequested = false;
         viewer.scale = "1 1 1";
         console.error("AR activation failed:", error);
         alert("ARを起動できませんでした。");
@@ -400,10 +406,12 @@ openAR.addEventListener("click", async () => {
 viewer.addEventListener("ar-status", ({ detail: { status } }) => {
     const active = status === "session-started" || status === "object-placed";
     document.body.classList.toggle("webxr-active", active);
-    if (status === "failed") {
+    if (status === "failed" && arRequested) {
+        arRequested = false;
         alert("ARを起動できませんでした。");
     }
     if (status === "not-presenting" || status === "failed") {
+        arRequested = false;
         viewer.scale = "1 1 1";
     }
 });
