@@ -343,13 +343,16 @@ function selectViewerColor(colorCode, button) {
 }
 
 async function configureAR() {
-    if (document.createElement("a").relList.supports("ar")) {
+    const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    if (isIOS) {
         arMode = "quick-look";
     } else if (await navigator.xr?.isSessionSupported("immersive-ar").catch(() => false)) {
         arMode = "webxr";
     }
 
     viewer.setAttribute("ar-modes", arMode);
+    await viewer.updateComplete;
     arScale.disabled = false;
     openAR.disabled = false;
 }
