@@ -1,7 +1,7 @@
 import { createAssetPreview } from './asset-preview.js?v=1';
 const $ = id => document.getElementById(id);
 const state = { categories: [], projects: [], assets: [], page: 0, count: 0, editing: null, prepared: null, file: null, busy: false, request: 0, previewRequest: 0 };
-const labels = { active:'公開中',inactive:'非公開',draft:'未完了',deleted:'削除済み' };
+const labels = { active:'有効',inactive:'無効',draft:'未完了',deleted:'削除済み' };
 let searchTimer;
 async function api(body) {
     const {data,error}=await supabaseClient.functions.invoke('manage-assets',{body});
@@ -159,7 +159,7 @@ $('confirm-delete').addEventListener('click',async()=>{
 });
 $('restore-asset').addEventListener('click',async()=>{
     if(state.busy)return; setBusy(true);
-    try { await api({action:'restore',id:state.editing.id}); setBusy(false); closeDialog(); await loadAssets(); message('非公開の状態で復元しました。'); }
+    try { await api({action:'restore',id:state.editing.id}); setBusy(false); closeDialog(); await loadAssets(); message('無効の状態で復元しました。'); }
     catch(error){$('form-status').textContent=error.message;}
     finally{setBusy(false);}
 });

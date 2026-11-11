@@ -7,14 +7,14 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script><script src="js/auth.js"></script>
 <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
-<script type="module" src="js/asset-manager.js?v=2"></script>
+<script type="module" src="js/asset-manager.js?v=3"></script>
 </head>
 <body>
 <header class="topbar"><a class="brand" href="index.html">QRIE <span>管理画面</span></a><a href="index.html">顧客管理へ戻る</a></header>
 <main>
 <section class="page-heading"><div><p class="eyebrow">アセットライブラリ</p><h1>アセット管理</h1><p>家具・壁紙・床材をまとめて管理します。</p></div><button id="new-asset" class="primary" disabled>＋ アセットを追加</button></section>
 <p id="notice" role="status" aria-live="polite">管理者権限を確認しています…</p>
-<section class="filters" aria-label="検索と絞り込み"><label>検索<input id="search" type="search" placeholder="アセット名で検索"></label><label>カテゴリー<select id="category-filter"><option value="">すべてのカテゴリー</option></select></label><label>状態<select id="status-filter"><option value="">すべて</option><option value="active">公開中</option><option value="inactive">非公開</option><option value="draft">アップロード未完了</option><option value="deleted">削除済み</option></select></label></section>
+<section class="filters" aria-label="検索と絞り込み"><label>検索<input id="search" type="search" placeholder="アセット名で検索"></label><label>カテゴリー<select id="category-filter"><option value="">すべてのカテゴリー</option></select></label><label>状態<select id="status-filter"><option value="">すべて</option><option value="active">有効</option><option value="inactive">無効</option><option value="draft">アップロード未完了</option><option value="deleted">削除済み</option></select></label></section>
 <div class="list-heading"><span id="asset-count">0 件</span><span>全体ライブラリ・管理者専用</span></div>
 <section id="asset-grid" class="asset-grid" aria-label="アセット一覧"></section>
 <div class="pagination"><button id="previous-page" disabled>前へ</button><span id="page-label">1</span><button id="next-page" disabled>次へ</button></div>
@@ -23,7 +23,7 @@
 <form id="asset-form">
 <div class="dialog-heading"><div><p class="eyebrow">ライブラリ</p><h2 id="dialog-title">アセットを追加</h2></div><button type="button" id="close-dialog" class="icon-button" aria-label="閉じる">×</button></div>
 <div class="editor-layout"><div class="preview-column"><div id="asset-preview" aria-label="アセットプレビュー"><p>ファイルを選択してください</p></div><p id="preview-details"></p><label class="file-label">GLB・画像を選択<input id="asset-file" type="file" accept=".glb,.png,.jpg,.jpeg,.webp"></label><p class="hint">GLB は 100 MB まで。画像は 20 MB まで。サムネイルは自動で生成されます。</p></div>
-<div class="fields"><label>名前<input id="asset-name" required maxlength="120" autocomplete="off"></label><label>カテゴリー<select id="asset-category" required></select></label><div class="dimensions"><label>幅 (cm)<input id="asset-width" type="number" min="0" max="100000" step="0.1" required></label><label>奥行 (cm)<input id="asset-depth" type="number" min="0" max="100000" step="0.1" required></label><label>高さ (cm)<input id="asset-height" type="number" min="0" max="100000" step="0.1" required></label></div><p class="hint">GLB の寸法を自動計測します。実寸に合わせて修正できます。元の GLB は変更されません。</p><label>公開状態<select id="asset-status"><option value="active">公開中</option><option value="inactive">非公開</option></select></label>
+<div class="fields"><label>名前<input id="asset-name" required maxlength="120" autocomplete="off"></label><label>カテゴリー<select id="asset-category" required></select></label><div class="dimensions"><label>幅 (cm)<input id="asset-width" type="number" min="0" max="100000" step="0.1" required></label><label>奥行 (cm)<input id="asset-depth" type="number" min="0" max="100000" step="0.1" required></label><label>高さ (cm)<input id="asset-height" type="number" min="0" max="100000" step="0.1" required></label></div><p class="hint">GLB の寸法を自動計測します。実寸に合わせて修正できます。元の GLB は変更されません。</p><label>利用状態<select id="asset-status"><option value="active">有効</option><option value="inactive">無効</option></select></label>
 <fieldset><legend>利用できるプロジェクト</legend><input id="project-search" type="search" placeholder="プロジェクトを検索" aria-label="プロジェクトを検索"><div id="project-options"></div><p class="hint">選択したプロジェクトへ登録します。購入者向けエディターとの接続は次の段階で行います。</p></fieldset></div></div>
 <p id="form-status" role="status" aria-live="polite"></p><progress id="upload-progress" max="100" value="0" hidden></progress>
 <div class="dialog-actions"><button type="button" id="delete-asset" class="danger" hidden>削除</button><button type="button" id="restore-asset" hidden>復元</button><span></span><button type="button" id="cancel-dialog">キャンセル</button><button id="save-asset" class="primary" type="submit">保存</button></div>

@@ -60,7 +60,7 @@ serve(async req => {
             // Prevent uncontrolled catalog growth on the shared free database.
             const {count,error:countError}=await db.from('assets').select('id',{count:'exact',head:true}); if(countError) throw countError;
             demand((count||0)<2000,'ライブラリの登録上限に達しました。');
-            const id=crypto.randomUUID(); const base=`qrie-assets/${model?'furniture':'textures'}/${id}`;
+            const id=crypto.randomUUID(); const base=`clients/asset-library/${model?'furniture':'textures'}/${id}`;
             const assetKey=`${base}/original.${extension==='jpeg'?'jpg':extension}`,thumbKey=`${base}/thumbnail.webp`;
             const {error}=await db.from('assets').insert({...meta,id,status:'draft',desired_status:meta.status,asset_type:model?'model':'texture',s3_key:assetKey,thumbnail_s3_key:thumbKey,original_filename:body.filename,content_type:contentType,file_size:body.file_size,thumbnail_size:body.thumbnail_size,pivot_offset:body.pivot_offset,created_by:authData.user.id}); if(error) throw error;
             const upload=async(key:string,type:string)=>getSignedUrl(s3,new PutObjectCommand({Bucket:bucket,Key:key,ContentType:type}),{expiresIn:300});
