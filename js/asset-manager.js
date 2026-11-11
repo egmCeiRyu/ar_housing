@@ -35,6 +35,7 @@ function projects(selected=[]) {
     $('project-search').value='';
 }
 async function loadAssets() {
+    $('clear-trash').hidden=true;
     const request=++state.request;
     message('アセットを読み込んでいます…');
     try {
@@ -56,6 +57,7 @@ async function loadAssets() {
         }
         if(!state.assets.length) { const empty=document.createElement('p'); empty.className='empty'; empty.textContent='アセットがありません。「アセットを追加」から登録してください。'; $('asset-grid').append(empty); }
         $('asset-count').textContent=state.count+' 件'; $('page-label').textContent=(state.page+1)+' / '+Math.max(1,Math.ceil(state.count/24));
+        $('clear-trash').hidden=$('status-filter').value!=='deleted'||!state.assets.some(asset=>asset.status==='deleted');
         $('previous-page').disabled=state.page===0; $('next-page').disabled=(state.page+1)*24>=state.count;
         message('GLB・画像は S3 に保存されます。');
     } catch(error) { if(request===state.request) message(error.message); }
@@ -171,6 +173,29 @@ $('search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=
 for(const id of ['category-filter','status-filter']) $(id).addEventListener('change',()=>{state.page=0;loadAssets();});
 $('previous-page').addEventListener('click',()=>{if(state.page>0){state.page--;loadAssets();}});
 $('next-page').addEventListener('click',()=>{state.page++;loadAssets();});
+let trashBusy=false;
+let pendingTrashIds=[];
+$('clear-trash').addEventListener('click',()=>{
+    pendingTrashIds=state.assets.filter(asset=>asset.status==='deleted').map(asset=>asset.id);
+    if(!pendingTrashIds.length)return;
+    $('trash-description').textContent='このページの削除済み登録 '+pendingTrashIds.length+' 件を完全に消去します。ほかのページや有効なアセットは対象外です。';
+    $('trash-confirm').checked=false;$('confirm-trash').disabled=true;$('trash-notice').textContent='';$('trash-dialog').showModal();
+});
+$('trash-confirm').addEventListener('change',()=>{$('confirm-trash').disabled=trashBusy||!$('trash-confirm').checked;});
+function closeTrash(){if(trashBusy)return;$('trash-dialog').close();pendingTrashIds=[];}
+$('cancel-trash').addEventListener('click',closeTrash);
+$('trash-dialog').addEventListener('cancel',event=>{event.preventDefault();closeTrash();});
+$('confirm-trash').addEventListener('click',async()=>{
+    if(trashBusy||!$('trash-confirm').checked||!pendingTrashIds.length)return;
+    trashBusy=true;for(const control of $('trash-dialog').querySelectorAll('button,input'))control.disabled=true;
+    $('trash-notice').textContent='消去しています…';
+    try {
+        const result=await api({action:'clear_trash',ids:pendingTrashIds});
+        $('trash-dialog').close();pendingTrashIds=[];state.page=0;await loadAssets();
+        message(result.removed+' 件の登録を消去しました。'+(result.protected?' '+result.protected+' 件はプロジェクトで使用中のため保護されました。':'')+' S3の元ファイルは保持されています。');
+    } catch(error){$('trash-notice').textContent=error.message;}
+    finally{trashBusy=false;for(const control of $('trash-dialog').querySelectorAll('button,input'))control.disabled=false;$('confirm-trash').disabled=!$('trash-confirm').checked;}
+});
 let categoryBusy=false;
 let managedCategories=[];
 let deletingCategory=null;

@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>アセット管理 · QRIE</title>
-<link rel="stylesheet" href="css/asset-manager.css?v=categories">
+<link rel="stylesheet" href="css/asset-manager.css?v=trash-cleanup">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script><script src="js/auth.js"></script>
 <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
-<script type="module" src="js/asset-manager.js?v=categories-order"></script>
+<script type="module" src="js/asset-manager.js?v=trash-cleanup"></script>
 </head>
 <body>
 <header class="topbar"><a class="brand" href="index.html">QRIE <span>管理画面</span></a><a href="index.html">顧客管理へ戻る</a></header>
@@ -15,7 +15,7 @@
 <section class="page-heading"><div><p class="eyebrow">アセットライブラリ</p><h1>アセット管理</h1><p>家具・壁紙・床材をまとめて管理します。</p></div><div class="page-actions"><button id="manage-categories" type="button" disabled>カテゴリー管理</button><button id="new-asset" class="primary" disabled>＋ アセットを追加</button></div></section>
 <p id="notice" role="status" aria-live="polite">管理者権限を確認しています…</p>
 <section class="filters" aria-label="検索と絞り込み"><label>検索<input id="search" type="search" placeholder="アセット名で検索"></label><label>カテゴリー<select id="category-filter"><option value="">すべてのカテゴリー</option></select></label><label>状態<select id="status-filter"><option value="">すべて</option><option value="active">有効</option><option value="inactive">無効</option><option value="draft">アップロード未完了</option><option value="deleted">削除済み</option></select></label></section>
-<div class="list-heading"><span id="asset-count">0 件</span><span>全体ライブラリ・管理者専用</span></div>
+<div class="list-heading"><span id="asset-count">0 件</span><span>全体ライブラリ・管理者専用</span><button id="clear-trash" class="danger" type="button" hidden>削除済みを消去</button></div>
 <section id="asset-grid" class="asset-grid" aria-label="アセット一覧"></section>
 <div class="pagination"><button id="previous-page" disabled>前へ</button><span id="page-label">1</span><button id="next-page" disabled>次へ</button></div>
 </main>
@@ -42,4 +42,5 @@
 <p class="hint">削除したカテゴリーは復元できます。移動したアセットは移動先に残ります。</p>
 <p id="category-delete-notice" role="status"></p><div class="dialog-actions"><button id="cancel-category-delete" type="button">キャンセル</button><button class="danger" type="submit">削除する</button></div>
 </form></dialog>
+<dialog id="trash-dialog" aria-labelledby="trash-title"><h2 id="trash-title">削除済みの登録情報を消去</h2><p id="trash-description"></p><p>S3の元ファイルは削除しません。有効なプロジェクトに登録されているアセットは保護されます。</p><label class="category-archived-toggle"><input id="trash-confirm" type="checkbox">登録情報は元に戻せないことを確認しました</label><p id="trash-notice" role="status"></p><div class="dialog-actions"><button id="cancel-trash" type="button">キャンセル</button><button id="confirm-trash" class="danger" type="button" disabled>完全に消去する</button></div></dialog>
 </body></html>

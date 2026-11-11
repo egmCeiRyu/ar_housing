@@ -6,7 +6,7 @@ const source=fs.readFileSync('supabase/functions/manage-assets/index.ts','utf8')
 const code=stripTypeScriptTypes(source.replace(/import[\s\S]*?from\s+["'][^"']+["'];/g,''));
 (async()=>{
  let checks=0;
- const actions=['list','begin','complete','update','delete','restore','category_list','category_create','category_rename','category_delete','category_restore'];
+ const actions=['list','begin','complete','update','delete','restore','category_list','category_create','category_rename','category_delete','category_restore','clear_trash'];
  for(const action of actions) for(const [token,user,error,expected] of [
   [null,null,null,401],['invalid',null,{message:'invalid'},401],
   ['client',{app_metadata:{role:'client'}},null,403],
