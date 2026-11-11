@@ -44,3 +44,13 @@ The actual HTML/CSS was also rendered in an isolated 390px iframe: viewport and 
 ## Publication
 
 `node stage-ar-preview.mjs` stages root HTML, css, js and vendor files. It excludes the test fixtures and Supabase sources. Backend functions/migrations deploy separately. Original asset folders are not included in Git. The S3 error in the initial `qrie-assets` path was resolved by using the existing `clients/` namespace; no AWS console login or extra IAM permission was needed.
+
+## Category management and dashboard actions
+
+- Migration `202611110003_asset_categories.sql` adds reversible category archiving, server-only list/manage RPCs and validation against assigning an archived category.
+- Admins can create/rename categories, transfer all linked assets (including archived/draft assets) and archive a category atomically. The last active category is protected. Restoring a category does not move assets back from the chosen destination. Names are checked for active-category duplicates.
+- New category actions are covered by 47 backend authorization/origin/method cases. Existing browser authorization/syntax checks passed.
+- `tests/asset-categories.sql` passed against PostgreSQL inside a transaction with rollback: create, rename, duplicate rejection, required transfer, archive, restore, unchanged S3 references and restricted RPC permissions. No test data persisted.
+- Browser UI create/rename/transfer/archive/restore checks passed using `tests/category-ui.html`, which uses actual application HTML/JS with in-memory data and no production API calls. An automatic review rejected creating a persistent test category in production; that test was replaced by these local checks and the rollback-controlled SQL checks.
+- The existing category list was verified read-only in the published UI. Production create/rename/archive operations were not exercised with persistent test records.
+- The Asset Manager link now sits directly below the new-client button in the dashboard hero. Both texts are centered. Actual HTML/CSS checks at 1000px and 390px confirmed aligned left edges, vertical stacking, centered flex alignment and no horizontal overflow. The live dashboard alignment was also verified through DOM bounds.
