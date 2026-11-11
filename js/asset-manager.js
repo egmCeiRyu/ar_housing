@@ -13,6 +13,9 @@ async function api(body) {
     if(data?.error) throw new Error(data.error);
     return data;
 }
+function sortCategories(categories) {
+    return [...categories].sort((a,b)=>Number(a.id==='other')-Number(b.id==='other'));
+}
 function option(value,text) { const item=document.createElement('option'); item.value=value; item.textContent=text; return item; }
 function message(text) { $('notice').textContent=text; }
 function releasePreview() { state.previewRequest++; state.prepared?.dispose(); state.prepared=null; state.file=null; $('asset-preview').replaceChildren(); }
@@ -192,7 +195,7 @@ function syncCategoryOptions() {
 }
 async function refreshManagedCategories() {
     const result=await api({action:'category_list',include_archived:$('show-archived-categories').checked});
-    managedCategories=result.categories;
+    managedCategories=sortCategories(result.categories);
     syncCategoryOptions();
     $('category-list').replaceChildren();
     for(const category of managedCategories) {
@@ -269,7 +272,7 @@ try {
             supabaseClient.from('properties').select('id,name').order('name').limit(200)
         ]);
         if(categories.error||properties.error) throw new Error('ライブラリを初期化できませんでした。管理者に連絡してください。');
-        state.categories=categories.data;state.projects=properties.data;
+        state.categories=sortCategories(categories.data);state.projects=properties.data;
         for(const category of state.categories) { $('category-filter').append(option(category.id,category.name));$('asset-category').append(option(category.id,category.name)); }
         $('new-asset').disabled=false;
         $('manage-categories').disabled=false;
