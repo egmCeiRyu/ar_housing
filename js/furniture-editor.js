@@ -15,6 +15,8 @@ const stage = document.querySelector('#stage');
 const status = document.querySelector('#status');
 const rotate = document.querySelector('#rotate');
 const remove = document.querySelector('#remove');
+const selectionActions = document.querySelector('#selection-actions');
+const selectionName = document.querySelector('#selection-name');
 const entries = config.entries;
 const furniture = Object.fromEntries(entries.map(entry => [entry.id, entry]));
 const wallpapers = config.wallpapers;
@@ -302,6 +304,7 @@ function setWallpaperControls(open) {
     wallColor.disabled = open || !activeFloor.wallMaterials.size || Boolean(activeFloor.wallpaper.id);
     wallpaperButton.disabled = open || !activeFloor.wallMaterials.size;
     rotate.disabled = remove.disabled = open || !selected;
+    syncSelectionActions();
 }
 
 function clearWallpaperOutline() {
@@ -554,8 +557,13 @@ function fitCamera(aspect = stage.clientWidth / stage.clientHeight) {
 }
 new ResizeObserver(resize).observe(stage);
 
+function syncSelectionActions() {
+    selectionActions.hidden = !selected || !result.hidden || Boolean(wallpaperDraft);
+    selectionName.textContent = selected ? furniture[selected.userData.type].name + 'を選択中' : '';
+}
 function updateControls(message) {
-    status.textContent = message;
+    status.textContent = selected ? '' : message;
+    syncSelectionActions();
     rotate.disabled = remove.disabled = !selected || !result.hidden;
     for (const button of catalog) button.setAttribute('aria-pressed', String(button.dataset.piece === armed));
     draw();
@@ -811,6 +819,7 @@ floorSelect.addEventListener('change', async () => {
     const previousIndex = floorEntries.findIndex(entry => entry.name === activeFloor.room.name);
     const controls = [...catalog, floorSelect, showWalls, wallColor, wallpaperButton, preview, rotate, remove];
     for (const control of controls) control.disabled = true;
+    syncSelectionActions();
     status.textContent = '階のモデルを読み込んでいます…';
     try {
         activateFloor(await loadFloor(Number(floorSelect.value)));
@@ -846,6 +855,7 @@ wallColor.addEventListener('input', event => {
 
 preview.addEventListener('click', async () => {
     if (gesture || drag) return;
+    selectionActions.hidden = true;
     const editingControls = [...catalog, showWalls, wallColor, wallpaperButton, arScale, floorSelect, rotate, remove, preview];
     for (const control of editingControls) control.disabled = true;
     try {

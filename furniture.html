@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QRIE · 家具配置エディター</title>
-<link rel="stylesheet" href="css/furniture-editor.css?v=floor-toolbar">
+<link rel="stylesheet" href="css/furniture-editor.css?v=selection-actions">
 <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
 <script type="module" src="./vendor/model-viewer/dist/model-viewer.min.js"></script>
 
@@ -31,9 +31,7 @@
 </label>
 <hr>
 <p id="status" role="status">配置する家具を選んでください。</p>
-<div class="actions">
-<button id="rotate" disabled>45°回転</button><button id="remove" disabled>削除</button>
-</div>
+
 <button id="preview" class="primary">配置を確認</button>
 </aside>
 <section class="workspace" aria-label="3Dエディター">
@@ -47,6 +45,9 @@
 <p id="stage-notice" role="status">3Dモデルを読み込んでいます…</p>
 <div id="size-flag" aria-live="polite" hidden></div>
 </div>
+<section id="selection-actions" class="selection-actions" aria-label="選択した家具" hidden><p id="selection-name" role="status"></p><div class="actions">
+<button id="rotate" disabled>45°回転</button><button id="remove" disabled>削除</button>
+</div></section>
 <div id="result" hidden>
 <model-viewer id="ar-viewer" class="ar-source" loading="eager" alt="選択した縮尺の部屋" ar ar-modes="webxr quick-look" ar-usdz-max-texture-size="1024"><span slot="ar-button"></span></model-viewer>
 <div class="result-actions"><button id="launch-ar" disabled>ARで見る</button><button id="back">編集に戻る</button></div>
@@ -73,7 +74,7 @@ const notice = document.getElementById('stage-notice');
 if (location.protocol === 'file:') {
     notice.textContent = '3Dモデルを表示するには、Abrir QRIE.cmd を起動してください。';
 } else {
-    import('./js/furniture-editor.js?v=categories').then(() => notice.remove()).catch(error => {
+    import('./js/furniture-editor.js?v=selection-actions').then(() => notice.remove()).catch(error => {
         console.error(error);
         notice.textContent = error.message || '3Dモデルを読み込めませんでした。';
     });
