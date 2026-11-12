@@ -105,3 +105,14 @@ select { min-height: 44px; padding: 6px 10px; font: inherit; border: 1px solid #
     .wallpaper-sheet h2 { font-size: 1rem; }
     .wallpaper-sheet p { margin: 4px 0 8px; }
 }
+
+.catalog>button:not([data-piece]){touch-action:manipulation;}
+.furniture-menu{width:min(680px,calc(100% - 24px));padding:20px;border:1px solid #ccd7e3;background:#fff;color:#142e54;max-height:85dvh;overflow:auto;}
+.furniture-menu::backdrop{background:rgb(15 30 50 / 40%);}
+.furniture-menu-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.furniture-menu-heading h2{margin:0;font-size:1.2rem;}
+.catalog-carousel{display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;touch-action:pan-x;scroll-snap-type:x proximity;padding:8px 0 16px;}
+.catalog .catalog-carousel button{flex:0 0 150px;min-width:0;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;scroll-snap-align:start;touch-action:pan-x;user-select:none;}
+.catalog-carousel img{width:124px;height:110px;object-fit:contain;pointer-events:none;background:#edf1f5;}
+.catalog-carousel span{overflow-wrap:anywhere;}
+@media(max-width:700px){.furniture-menu{margin:auto auto 16px;}.catalog .catalog-carousel button{flex-basis:140px;}}

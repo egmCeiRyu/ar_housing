@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-import { furnitureCatalog } from './furniture-config.js';
+import { furnitureCatalog } from './furniture-config.js?v=categories';
+import { createFurnitureMenu } from './furniture-menu.js?v=1';
 const slug = new URLSearchParams(location.search).get('slug');
 const { data: configuration, error: configurationError } = await supabaseClient.rpc('get_furniture_config', { project_slug: slug || '' });
 if (configurationError) throw new Error('家具の設定を読み込めませんでした。');
@@ -30,14 +31,8 @@ const textureLoader = new THREE.TextureLoader();
 let wallpaperDraft = null;
 let wallpaperOutline = null;
 const catalogContainer = document.querySelector('.catalog');
-catalogContainer.replaceChildren();
-for (const entry of entries) {
-    const button = document.createElement('button');
-    button.dataset.piece = entry.id;
-    button.textContent = entry.name;
-    catalogContainer.append(button);
-}
-const catalog = [...catalogContainer.querySelectorAll('button')];
+const catalogMenu = createFurnitureMenu(entries, catalogContainer);
+const catalog = catalogMenu.buttons;
 const preview = document.querySelector('#preview');
 const result = document.querySelector('#result');
 const arViewer = document.querySelector('#ar-viewer');
@@ -654,6 +649,7 @@ for (const button of catalog) {
     let moved = false;
     let loadingModel = false;
     button.addEventListener('pointerdown', event => {
+        if (button.closest('.catalog-carousel')) return;
         if (!pieceTemplates.has(type)) return;
         if (event.button !== 0 || !result.hidden || gesture) return;
         moved = false;
@@ -691,6 +687,7 @@ for (const button of catalog) {
     });
     button.addEventListener('click', async event => {
         if (!result.hidden || loadingModel || (event.detail && moved)) return;
+        catalogMenu.close();
         loadingModel = true;
         button.disabled = true;
         status.textContent = furniture[type].name + 'を読み込んでいます…';

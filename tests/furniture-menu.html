@@ -1,0 +1,5 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="stylesheet" href="../css/furniture-editor.css?v=categories"><h1>Local category menu test</h1><div class="catalog" style="max-width:240px" aria-label="家具カテゴリー"></div><p id="selection" role="status"></p><script type="module">
+import {createFurnitureMenu} from '../js/furniture-menu.js';
+const entries=Array.from({length:6},(_,i)=>({id:'chair-'+i,name:'チェア '+(i+1),category:'チェア'}));entries.push({id:'table',name:'テーブル A',category:'テーブル'});
+const menu=createFurnitureMenu(entries,document.querySelector('.catalog'));for(const button of menu.buttons)button.addEventListener('click',()=>{menu.close();document.querySelector('#selection').textContent=button.dataset.piece;});
+</script>
