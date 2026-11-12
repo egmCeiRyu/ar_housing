@@ -235,3 +235,9 @@
 
 
 
+
+.furniture-floor-row{display:grid;grid-template-columns:minmax(100px,1fr) minmax(0,3fr) auto;gap:12px;align-items:end;margin:14px 0;padding-bottom:14px;border-bottom:1px solid #d6dee8;}
+.furniture-floor-row label{min-width:0;}
+.furniture-floor-row input{width:100%;box-sizing:border-box;}
+.furniture-floor-row button{margin:0;}
+@media(max-width:600px){.furniture-floor-row{grid-template-columns:minmax(0,1fr);}.furniture-floor-row button{justify-self:end;}}

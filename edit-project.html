@@ -9,13 +9,14 @@ content="width=device-width,initial-scale=1">
 <title>Edit Project</title>
 
 <link rel="stylesheet" href="css/common.css?v=qrie-radius-zero">
-<link rel="stylesheet" href="css/project.css?v=qrie-radius-zero">
+<link rel="stylesheet" href="css/project.css?v=dynamic-floors">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/config.js?v=ar-entry"></script>
 <script src="js/supabase.js"></script>
 <script src="js/auth.js"></script>
-<script defer src="js/edit-project.js?v=furniture-floors"></script>
+<script defer src="js/project-floors.js?v=1"></script>
+<script defer src="js/edit-project.js?v=dynamic-floors"></script>
 
 </head>
 
@@ -49,7 +50,7 @@ content="width=device-width,initial-scale=1">
         </label>
 
         <input id="glbUrl" type="text">
-        <fieldset><legend>家具モード・各階のGLB</legend><p>顧客の家具モードを有効にした場合に使用します。家具を置く床には floor マテリアルが必要です。</p><label for="firstFloorUrl">1階 GLB URL</label><input id="firstFloorUrl" type="url" placeholder="https://…"><label for="secondFloorUrl">2階 GLB URL（任意）</label><input id="secondFloorUrl" type="url" placeholder="https://…"></fieldset>
+        <fieldset><legend>家具モード・各階のGLB</legend><p>階ごとに名前とGLB URLを登録してください。家具を置く床には floor マテリアルが必要です。</p><div id="furnitureFloors"></div><button id="addFurnitureFloor" type="button">＋ 階を追加</button></fieldset>
 
         <div class="drop-zone" id="glbDropZone">
             <div class="drop-title">
