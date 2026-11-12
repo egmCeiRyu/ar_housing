@@ -199,3 +199,12 @@ body #loading{ top:calc(76px + env(safe-area-inset-top, 0px)); }
 #viewer.directional-preview-ready{visibility:hidden;pointer-events:none;}
 .webxr-active #house-preview{display:none;}
 .webxr-active #viewer.directional-preview-ready{visibility:visible;pointer-events:auto;}
+
+/* Keep the house above the color and scale controls in the page preview. */
+body{background:#f5f7fb;}
+body:not(.webxr-active) #viewer,
+body:not(.webxr-active) #house-preview{
+    top:calc(76px + env(safe-area-inset-top, 0px));
+    bottom:calc(170px + env(safe-area-inset-bottom, 0px));
+    height:auto;
+}
