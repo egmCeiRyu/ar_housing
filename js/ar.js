@@ -10,7 +10,6 @@ const openAR = document.getElementById("openAR");
 let arMode = "scene-viewer";
 let arRequested = false;
 let housePreview = null;
-let quickLook = null;
 
 let currentProject = null;
 let currentSessionId = null;
@@ -263,7 +262,6 @@ function validateMaterials() {
 }
 
 function applyMaterialColor(materialName, colorCode) {
-    quickLook?.invalidate();
     housePreview?.setColor(materialName, colorCode);
 
     const model = viewer.model;
@@ -371,14 +369,7 @@ async function configureAR() {
         arMode = "webxr";
     }
 
-    if (arMode === "quick-look") {
-        const status = document.createElement("p");
-        status.id = "quickLookStatus";
-        status.setAttribute("role", "status");
-        document.getElementById("viewerControls").after(status);
-        quickLook = new QRIEQuickLook({ viewer, button: openAR, scaleControl: arScale, status });
-        arScale.addEventListener("change", () => quickLook.invalidate());
-    }
+
     viewer.setAttribute("ar-modes", arMode);
     await viewer.updateComplete;
 }
@@ -410,10 +401,7 @@ openAR.addEventListener("click", async () => {
         alert("ARを起動できません。iPhoneではSafari、AndroidではChromeでこのページを開いてください。");
         return;
     }
-    if (arMode === "quick-look") {
-        await quickLook.open(scale);
-        return;
-    }
+
     viewer.scale = [scale, scale, scale].join(" ");
     arRequested = true;
     try {
