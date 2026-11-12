@@ -209,8 +209,10 @@ body:not(.webxr-active) #house-preview{
     height:auto;
 }
 
-#qualityControls{display:flex;align-items:center;gap:8px;padding:6px 12px;background:#fff;font-size:14px;}
+#qualityControls{display:contents;}
 #qualityControls[hidden]{display:none;}
-#viewerQuality{min-height:36px;padding:0 10px;border:1px solid #6b7280;background:#fff;font:inherit;}
-body.has-quality-selector:not(.webxr-active) #viewer,
-body.has-quality-selector:not(.webxr-active) #house-preview{bottom:calc(230px + env(safe-area-inset-bottom,0px));}
+#qualityControls label,
+#arActions>label[for="arScale"]{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
+#arActions{gap:6px;padding:6px 8px;}
+#arScale{width:72px;padding:0 4px;}
+#viewerQuality{width:116px;min-height:44px;padding:0 4px;border:1px solid #6b7280;background:#fff;font:inherit;font-size:14px;}
