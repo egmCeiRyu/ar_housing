@@ -152,6 +152,9 @@ async function loadProject() {
 
     currentProject =
     data;
+    const floors=data.furniture_floors||[];
+    document.getElementById("firstFloorUrl").value=floors.find(floor=>floor.name==="1階")?.url||"";
+    document.getElementById("secondFloorUrl").value=floors.find(floor=>floor.name==="2階")?.url||"";
 
     currentClient =
     data.clients;
@@ -200,7 +203,10 @@ async function saveProject() {
         return;
     }
 
+    const furnitureFloors=[['1階','firstFloorUrl'],['2階','secondFloorUrl']].map(([name,id])=>({name,url:document.getElementById(id).value.trim()})).filter(floor=>floor.url);
+    if(furnitureFloors.some(floor=>{try{return new URL(floor.url).protocol!=='https:';}catch{return true;}})) {alert('各階のGLBにはHTTPS URLを入力してください。');return;}
     const projectData = {
+        furniture_floors: furnitureFloors,
         name: name,
         slug: createSlug(name),
         glb_url: document.getElementById("glbUrl").value.trim(),

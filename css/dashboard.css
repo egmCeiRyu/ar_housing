@@ -471,3 +471,6 @@ body{
 .admin-hero-actions{display:flex;flex-direction:column;gap:12px;flex-shrink:0;min-width:190px}
 .admin-hero-actions .new-client-btn{display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;white-space:nowrap;width:100%}
 @media(max-width:700px){.admin-hero-actions{width:100%;min-width:0}}
+
+.form-group label.furniture-toggle{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.form-group .furniture-toggle input{width:18px;height:18px;margin:0;flex:0 0 18px;padding:0;}

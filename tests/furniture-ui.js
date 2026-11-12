@@ -1,0 +1,4 @@
+
+let html=await(await fetch('../furniture.html')).text();
+html=html.replace('<head>','<head><base href="/">').replace('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>','').replace('<script src="js/supabase.js"></script>','<script>window.supabaseClient={rpc:async()=>({data:'+JSON.stringify({"floors":[{"name":"1階","url":"https://ar-housing-platform-418384447723-ap-northeast-1-an.s3.ap-northeast-1.amazonaws.com/clients/floor-catalog/first-floor/house.glb?v=79d7ba8e147b"},{"name":"2階","url":"https://ar-housing-platform-418384447723-ap-northeast-1-an.s3.ap-northeast-1.amazonaws.com/clients/floor-catalog/second-floor/house.glb?v=1111ade5e4d5"}],"assets":[{"id":"sofa","name":"ソファ","asset_type":"model","category_name":"ソファ","s3_key":"clients/furniture-catalog/sofa/house.glb","width":0,"height":0,"depth":0}]})+',error:null})};</script>');
+document.querySelector('#app').srcdoc=html;

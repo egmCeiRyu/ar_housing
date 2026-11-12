@@ -54,6 +54,7 @@ async function loadAR() {
     }
 
     currentProject = project;
+    void loadFurnitureEntry(project.slug);
 
     void loadClientEmail(project);
 
@@ -423,3 +424,13 @@ document.addEventListener("visibilitychange", () => {
         endARSession();
     }
 });
+
+async function loadFurnitureEntry(projectSlug) {
+ try {
+  const {data,error}=await supabaseClient.rpc('get_furniture_config',{project_slug:projectSlug});
+  if(error||!data)return;
+  const link=document.getElementById('decorateLink');
+  const url=new URL('furniture.html',location.href);url.searchParams.set('slug',projectSlug);
+  link.href=url.href;link.hidden=false;
+ } catch(error) { console.error('Furniture configuration unavailable'); }
+}

@@ -15,7 +15,7 @@ content="width=device-width,initial-scale=1">
 <script src="js/config.js?v=ar-entry"></script>
 <script src="js/supabase.js"></script>
 <script src="js/auth.js"></script>
-<script defer src="js/edit-project.js?v=ar-entry"></script>
+<script defer src="js/edit-project.js?v=furniture-floors"></script>
 
 </head>
 
@@ -49,6 +49,7 @@ content="width=device-width,initial-scale=1">
         </label>
 
         <input id="glbUrl" type="text">
+        <fieldset><legend>家具モード・各階のGLB</legend><p>顧客の家具モードを有効にした場合に使用します。家具を置く床には floor マテリアルが必要です。</p><label for="firstFloorUrl">1階 GLB URL</label><input id="firstFloorUrl" type="url" placeholder="https://…"><label for="secondFloorUrl">2階 GLB URL（任意）</label><input id="secondFloorUrl" type="url" placeholder="https://…"></fieldset>
 
         <div class="drop-zone" id="glbDropZone">
             <div class="drop-title">
