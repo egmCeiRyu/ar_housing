@@ -3,7 +3,7 @@ const source = "https://ar-housing-platform-418384447723-ap-northeast-1-an.s3.ap
 export function houseModelAssets(slug, sourceUrl) {
     if (slug !== "house01" || sourceUrl !== source) return null;
     return {
-        web: "/models/house01/atlas-alpha-webp.glb",
-        native: "/models/house01/atlas-alpha-native.glb"
+        web: "/models/house01/atlas-alpha-webp.glb?v=extrude1",
+        native: "/models/house01/atlas-alpha-native.glb?v=extrude1"
     };
 }
