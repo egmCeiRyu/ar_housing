@@ -60,6 +60,7 @@ serve(async (req) => {
 
             const userId = userData.user.id;
             const { error: insertError } = await adminClient.from("clients").insert({
+                furniture_enabled: body.furnitureEnabled === true,
                 company_name: companyName,
                 contact_name: contactName,
                 email,

@@ -152,6 +152,7 @@ function openNewClientForm() {
     contactNameInput.value = "";
     emailInput.value = "";
     clientPasswordInput.value = "";
+    document.getElementById("furnitureEnabled").checked = false;
 
     clientForm.classList.remove("hidden");
     clientForm.style.display = "block";
@@ -171,6 +172,8 @@ async function editClient(id) {
         alert(error.message);
         return;
     }
+
+    document.getElementById("furnitureEnabled").checked = data.furniture_enabled === true;
 
     editingClientId =
     id;
@@ -267,7 +270,8 @@ async function saveClient() {
             .from("clients")
             .update({
                 company_name: companyName,
-                contact_name: contactName
+                contact_name: contactName,
+                furniture_enabled: document.getElementById("furnitureEnabled").checked
             })
             .eq("id", editingClientId);
 
@@ -291,7 +295,8 @@ async function saveClient() {
                 body: {
                     contactName: contactName,
                     email: email,
-                    companyName: companyName
+                    companyName: companyName,
+                    furnitureEnabled: document.getElementById("furnitureEnabled").checked
                 }
             }
         );

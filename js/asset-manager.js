@@ -29,7 +29,7 @@ function projects(selected=[]) {
     for(const project of state.projects) {
         const label=document.createElement('label'), checkbox=document.createElement('input');
         checkbox.type='checkbox'; checkbox.value=project.id; checkbox.checked=chosen.has(project.id);
-        label.append(checkbox,document.createTextNode(project.name||'名称未設定')); $('project-options').append(label);
+        label.append(checkbox,document.createTextNode(project.label||project.name||'名称未設定')); $('project-options').append(label);
     }
     if(!state.projects.length) $('project-options').textContent='プロジェクトがありません。';
     $('project-search').value='';
@@ -294,10 +294,10 @@ try {
     if(await requireAdmin()) {
         const [categories,properties]=await Promise.all([
             supabaseClient.from('asset_categories').select('id,name').is('archived_at',null).order('sort_order'),
-            supabaseClient.from('properties').select('id,name').order('name').limit(200)
+            supabaseClient.from('properties').select('id,name,clients(company_name)').order('name').limit(200)
         ]);
         if(categories.error||properties.error) throw new Error('ライブラリを初期化できませんでした。管理者に連絡してください。');
-        state.categories=sortCategories(categories.data);state.projects=properties.data;
+        state.categories=sortCategories(categories.data);state.projects=(properties.data||[]).map(project=>({...project,label:(project.clients?.company_name||'顧客未設定')+' → '+(project.name||'名称未設定')}));
         for(const category of state.categories) { $('category-filter').append(option(category.id,category.name));$('asset-category').append(option(category.id,category.name)); }
         $('new-asset').disabled=false;
         $('manage-categories').disabled=false;
