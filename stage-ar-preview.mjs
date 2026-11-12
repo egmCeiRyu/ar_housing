@@ -7,6 +7,6 @@ for (const entry of await readdir(".", { withFileTypes: true })) {
         await cp(entry.name, target + "/" + entry.name);
     }
 }
-for (const folder of ["css", "js", "vendor"]) {
+for (const folder of ["css", "js", "vendor", "models"]) {
     await cp(folder, target + "/" + folder, { recursive: true });
 }

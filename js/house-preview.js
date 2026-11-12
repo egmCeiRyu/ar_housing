@@ -2,13 +2,13 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-export async function createHousePreview(url) {
+export async function createHousePreview(url, { lightweight = false } = {}) {
     const host = document.createElement('div');
     host.id = 'house-preview';
     host.setAttribute('role', 'img');
     host.setAttribute('aria-label', '住宅3Dプレビュー。ドラッグで回転、ピンチで拡大できます。');
     const renderer = new THREE.WebGLRenderer({antialias:true, alpha:false});
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(devicePixelRatio, lightweight ? 1.25 : 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.93;
@@ -27,7 +27,7 @@ export async function createHousePreview(url) {
     scene.add(sky);
     const sun = new THREE.DirectionalLight(0xfff9f0, 3.0);
     sun.castShadow = true;
-    sun.shadow.mapSize.set(1536, 1536);
+    sun.shadow.mapSize.set(lightweight ? 768 : 1536, lightweight ? 768 : 1536);
     sun.shadow.bias = -0.00015;
     sun.shadow.normalBias = 0.015;
     scene.add(sun, sun.target);

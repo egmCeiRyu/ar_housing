@@ -10,6 +10,11 @@ const openAR = document.getElementById("openAR");
 let arMode = "scene-viewer";
 let arRequested = false;
 let housePreview = null;
+let activeModelUrl = null;
+let viewerQualityMode = "full";
+let currentViewerColor = selectedColor;
+let lightVariantFallback = false;
+const viewerQuality = document.getElementById("viewerQuality");
 
 let currentProject = null;
 let currentSessionId = null;
@@ -64,11 +69,12 @@ async function loadAR() {
 
     await customElements.whenDefined("model-viewer");
     await configureAR();
+    await configureViewerQuality(project);
 
     viewer.addEventListener("load", async () => {
         try {
-            const { createHousePreview } = await import("./house-preview.js?v=20261112-sun-brighter");
-            housePreview = await createHousePreview(project.glb_url);
+            const { createHousePreview } = await import("./house-preview.js?v=20261112-light-mode");
+            housePreview = await createHousePreview(activeModelUrl, { lightweight: viewerQualityMode === "light" });
             viewer.classList.add("directional-preview-ready");
         } catch (error) { console.error("Directional preview unavailable", error); }
 
@@ -77,6 +83,7 @@ async function loadAR() {
         validateMaterials();
         arScale.disabled = false;
         openAR.disabled = false;
+        if (viewerQuality) viewerQuality.disabled = false;
 
         if (selectedColor && project.editable_material) {
             applyMaterialColor(
@@ -87,11 +94,19 @@ async function loadAR() {
     }, { once: true });
     viewer.addEventListener("error", ({ detail }) => {
         console.error("QRIE model-viewer error:", detail);
+        if (detail?.type === "loadfailure" && viewerQualityMode === "light" && !lightVariantFallback) {
+            lightVariantFallback = true;
+            viewerQualityMode = "full";
+            activeModelUrl = project.glb_url;
+            viewerQuality.value = "full";
+            viewer.setAttribute("src", activeModelUrl);
+            return;
+        }
         if (detail?.type === "loadfailure") {
             loading.innerText = "3Dモデルを読み込めませんでした。";
         }
     });
-    viewer.setAttribute("src", project.glb_url);
+    viewer.setAttribute("src", activeModelUrl);
 }
 
 async function loadClientEmail(project) {
@@ -258,6 +273,7 @@ function validateMaterials() {
 }
 
 function applyMaterialColor(materialName, colorCode) {
+    currentViewerColor = colorCode;
     housePreview?.setColor(materialName, colorCode);
 
     const model = viewer.model;
@@ -372,12 +388,13 @@ async function configureAR() {
 
 openAR.addEventListener("click", async () => {
     const scale = arScale.value;
-    if (arMode === "scene-viewer" && scale !== "1" && /Android/i.test(navigator.userAgent)) {
+    if (arMode === "scene-viewer" && (scale !== "1" || viewerQualityMode === "light") && /Android/i.test(navigator.userAgent)) {
         const modelOrigin = location.hostname === "egmceiryu.github.io"
             ? "https://qrie.ceiryu.workers.dev"
             : location.origin;
         const modelUrl = new URL("/ar-model.glb", modelOrigin);
         modelUrl.searchParams.set("slug", slug);
+        if (viewerQualityMode === "light") modelUrl.searchParams.set("quality", "light");
         modelUrl.searchParams.set("percent", String(Math.round(Number(scale) * 100)));
 
         const parameters = new URLSearchParams({
@@ -444,4 +461,38 @@ async function loadFurnitureEntry(projectSlug) {
   const url=new URL('furniture.html',location.href);url.searchParams.set('slug',projectSlug);
   link.href=url.href;link.hidden=false;
  } catch(error) { console.error('Furniture configuration unavailable'); }
+}
+
+async function configureViewerQuality(project) {
+    const manifestUrl = new URL("models/ar-variants.json", location.href);
+    activeModelUrl = project.glb_url;
+    let variants = {};
+    try {
+        const response = await fetch(manifestUrl, { cache: "no-store" });
+        if (response.ok) variants = await response.json();
+    } catch (error) { console.warn("Viewer variants unavailable", error); }
+    let saved;
+    try { saved = localStorage.getItem("qrie-quality:" + project.slug); } catch {}
+    const mobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) ||
+        window.matchMedia?.("(pointer: coarse)").matches;
+    const choice = QRIEViewerQuality.resolve(project, variants, {
+        baseUrl: manifestUrl.href, requested: params.get("quality"), saved, mobile
+    });
+    activeModelUrl = choice.url;
+    viewerQualityMode = choice.mode;
+    viewerQuality.value = choice.mode;
+    document.getElementById("qualityControls").hidden = !choice.available;
+    document.body.classList.toggle("has-quality-selector", choice.available);
+    const scale = params.get("scale");
+    if (Array.from(arScale.options).some(option => option.value === scale)) arScale.value = scale;
+    viewerQuality.addEventListener("change", () => {
+        try { localStorage.setItem("qrie-quality:" + project.slug, viewerQuality.value); } catch {}
+        const next = new URL(location.href);
+        next.searchParams.set("quality", viewerQuality.value);
+        next.searchParams.set("scale", arScale.value);
+        if (currentViewerColor) next.searchParams.set("color", currentViewerColor);
+        // A page navigation releases the previous model/renderer before loading another.
+        location.assign(next.href);
+    });
 }
