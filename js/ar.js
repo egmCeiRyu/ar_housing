@@ -67,7 +67,7 @@ async function loadAR() {
 
     viewer.addEventListener("load", async () => {
         try {
-            const { createHousePreview } = await import("./house-preview.js?v=20261112-sun");
+            const { createHousePreview } = await import("./house-preview.js?v=20261112-sun-brighter");
             housePreview = await createHousePreview(project.glb_url);
             viewer.classList.add("directional-preview-ready");
         } catch (error) { console.error("Directional preview unavailable", error); }
