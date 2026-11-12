@@ -66,11 +66,15 @@ async function loadAR() {
     await configureAR();
 
     viewer.addEventListener("load", async () => {
-        try {
-            const { createHousePreview } = await import("./house-preview.js?v=20261112-sun-brighter");
-            housePreview = await createHousePreview(project.glb_url);
-            viewer.classList.add("directional-preview-ready");
-        } catch (error) { console.error("Directional preview unavailable", error); }
+        // Quick Look already needs the model-viewer scene for USDZ export.
+        // Do not allocate a second GLTF scene/WebGL renderer on iPhone/iPad.
+        if (arMode !== "quick-look") {
+            try {
+                const { createHousePreview } = await import("./house-preview.js?v=20261112-sun-brighter");
+                housePreview = await createHousePreview(project.glb_url);
+                viewer.classList.add("directional-preview-ready");
+            } catch (error) { console.error("Directional preview unavailable", error); }
+        }
 
         loading.style.display = "none";
 
@@ -86,6 +90,7 @@ async function loadAR() {
         }
     }, { once: true });
     viewer.addEventListener("error", ({ detail }) => {
+        console.error("QRIE model-viewer error:", detail);
         if (detail?.type === "loadfailure") {
             loading.innerText = "3Dモデルを読み込めませんでした。";
         }
