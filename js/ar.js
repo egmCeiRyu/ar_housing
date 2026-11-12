@@ -9,6 +9,7 @@ const arScale = document.getElementById("arScale");
 const openAR = document.getElementById("openAR");
 let arMode = "scene-viewer";
 let arRequested = false;
+let housePreview = null;
 
 let currentProject = null;
 let currentSessionId = null;
@@ -64,7 +65,12 @@ async function loadAR() {
     await customElements.whenDefined("model-viewer");
     await configureAR();
 
-    viewer.addEventListener("load", () => {
+    viewer.addEventListener("load", async () => {
+        try {
+            const { createHousePreview } = await import("./house-preview.js?v=20261112-sun");
+            housePreview = await createHousePreview(project.glb_url);
+            viewer.classList.add("directional-preview-ready");
+        } catch (error) { console.error("Directional preview unavailable", error); }
 
         loading.style.display = "none";
 
@@ -251,6 +257,7 @@ function validateMaterials() {
 }
 
 function applyMaterialColor(materialName, colorCode) {
+    housePreview?.setColor(materialName, colorCode);
 
     const model = viewer.model;
 
@@ -407,6 +414,7 @@ openAR.addEventListener("click", async () => {
 viewer.addEventListener("ar-status", ({ detail: { status } }) => {
     const active = status === "session-started" || status === "object-placed";
     document.body.classList.toggle("webxr-active", active);
+    if (!active) requestAnimationFrame(() => housePreview?.refresh());
     if (status === "failed" && arRequested) {
         arRequested = false;
         alert("ARを起動できませんでした。");

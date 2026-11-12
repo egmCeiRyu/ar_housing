@@ -8,11 +8,12 @@
 
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
-<link rel="stylesheet" href="css/ar.css?v=20261112-lighting-header">
+<link rel="stylesheet" href="css/ar.css?v=20261112-direct-sun">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
-<script defer src="js/ar.js?v=furniture-entry"></script>
+<script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
+<script defer src="js/ar.js?v=20261112-direct-sun"></script>
 
 </head>
 
@@ -40,11 +41,11 @@
     ar-scale="fixed"
     camera-controls
     environment-image="css/lighting/daylight.hdr"
-    tone-mapping="agx"
+    tone-mapping="aces"
     camera-orbit="30deg 75deg auto"
     shadow-intensity="0.8"
     shadow-softness="0.65"
-    exposure="1">
+    exposure="0.85">
     <button slot="ar-button" hidden></button>
 </model-viewer>
 
