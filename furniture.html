@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QRIE · 家具配置エディター</title>
-<link rel="stylesheet" href="css/furniture-editor.css?v=selection-actions">
+<link rel="stylesheet" href="css/furniture-editor.css?v=wall-scale-row">
 <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
 <script type="module" src="./vendor/model-viewer/dist/model-viewer.min.js"></script>
 
@@ -22,13 +22,13 @@
 </div>
 
 <button id="choose-wallpaper" type="button" disabled>壁紙を選ぶ</button>
-<label>内壁の色 <input id="wall-color" type="color" value="#e8ded0"></label>
-<label>AR表示の縮尺
+<div class="wall-scale-row"><label>内壁の色 <input id="wall-color" type="color" value="#e8ded0"></label>
+<label><span>AR縮尺</span>
 <select id="ar-scale">
 <option>10%</option><option>20%</option><option>30%</option><option>40%</option><option>50%</option>
 <option>60%</option><option>70%</option><option>80%</option><option>90%</option><option selected>100%</option>
 </select>
-</label>
+</label></div>
 <hr>
 <p id="status" role="status">配置する家具を選んでください。</p>
 
