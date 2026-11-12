@@ -124,10 +124,6 @@ floorSelect.disabled = wallColor.disabled = wallpaperButton.disabled = true;
 
 function addFloorGrid(material) {
     const gridMaterial = material.clone();
-    gridMaterial.color.set("#c19a70");
-    gridMaterial.map = null;
-    gridMaterial.roughness = 0.9;
-    gridMaterial.metalness = 0;
     previewMaterials.set(gridMaterial.uuid, material);
     gridMaterial.onBeforeCompile = shader => {
         shader.vertexShader = 'varying vec3 vFloorGridPosition;\n' + shader.vertexShader;
@@ -142,7 +138,7 @@ function addFloorGrid(material) {
             vec2 gridDistance = abs(fract(gridPosition - 0.5) - 0.5) /
                 max(fwidth(gridPosition), vec2(0.0001));
             float gridLine = 1.0 - min(min(gridDistance.x, gridDistance.y), 1.0);
-            gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.28, 0.32, 0.35), gridLine * 0.45);
+            gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.28, 0.32, 0.35), gridLine * 0.15);
             #include <dithering_fragment>`
         );
     };
