@@ -110,7 +110,6 @@ const floors = new Map();
 const previewMaterials = new Map();
 const floorSelect = document.querySelector('#floor-select');
 floorSelect.replaceChildren(...floorEntries.map((floor,index)=>new Option(floor.name,String(index))));
-const showWalls = document.querySelector('#show-walls');
 const wallColor = document.querySelector('#wall-color');
 let activeFloor;
 let floorWidth;
@@ -118,7 +117,7 @@ let floorDepth;
 const cameraTarget = new THREE.Vector3();
 for (const button of catalog) button.disabled = true;
 preview.disabled = true;
-floorSelect.disabled = showWalls.disabled = wallColor.disabled = wallpaperButton.disabled = true;
+floorSelect.disabled = wallColor.disabled = wallpaperButton.disabled = true;
 
 function addFloorGrid(material) {
     const gridMaterial = material.clone();
@@ -227,7 +226,7 @@ function updateWallVisibility() {
         if (!object.isMesh) return;
         const materials = Array.isArray(object.material) ? object.material : [object.material];
         const isRoof = materials.some(material => material.name === 'roof');
-        object.visible = !isRoof && (showWalls.checked || floorMeshes.has(object) ||
+        object.visible = !isRoof && (floorMeshes.has(object) ||
             materials.some(material => material.name === 'internalWall'));
     });
 }
@@ -262,7 +261,7 @@ function activateFloor(loaded) {
 activateFloor(await loadFloor(Number(floorSelect.value)));
 for (const button of catalog) button.disabled = false;
 preview.disabled = false;
-floorSelect.disabled = showWalls.disabled = false;
+floorSelect.disabled = false;
 
 function refreshWallpaperOptions() {
     const id = activeFloor.wallpaper.id ?? '';
@@ -817,7 +816,7 @@ floorSelect.addEventListener('change', async () => {
     selected = null;
     armed = null;
     const previousIndex = floorEntries.findIndex(entry => entry.name === activeFloor.room.name);
-    const controls = [...catalog, floorSelect, showWalls, wallColor, wallpaperButton, preview, rotate, remove];
+    const controls = [...catalog, floorSelect, wallColor, wallpaperButton, preview, rotate, remove];
     for (const control of controls) control.disabled = true;
     syncSelectionActions();
     status.textContent = '階のモデルを読み込んでいます…';
@@ -831,13 +830,9 @@ floorSelect.addEventListener('change', async () => {
         floorSelect.value = String(previousIndex);
         updateControls('階のモデルを読み込めませんでした。もう一度選択してください。');
     } finally {
-        for (const control of [...catalog, floorSelect, showWalls, wallpaperButton, preview]) control.disabled = false;
+        for (const control of [...catalog, floorSelect, wallpaperButton, preview]) control.disabled = false;
         wallColor.disabled = !activeFloor.wallMaterials.size || Boolean(activeFloor.wallpaper.id);
     }
-});
-showWalls.addEventListener('change', () => {
-    updateWallVisibility();
-    resize();
 });
 wallColor.addEventListener('input', event => {
     if (activeFloor.wallpaper.id) return;
@@ -856,7 +851,7 @@ wallColor.addEventListener('input', event => {
 preview.addEventListener('click', async () => {
     if (gesture || drag) return;
     selectionActions.hidden = true;
-    const editingControls = [...catalog, showWalls, wallColor, wallpaperButton, arScale, floorSelect, rotate, remove, preview];
+    const editingControls = [...catalog, wallColor, wallpaperButton, arScale, floorSelect, rotate, remove, preview];
     for (const control of editingControls) control.disabled = true;
     try {
         const exporter = new GLTFExporter();
@@ -903,7 +898,7 @@ preview.addEventListener('click', async () => {
         status.textContent = activeFloor.room.name + 'の配置を確認できます。ARでは、この階の床が実際の床と同じ高さになります。';
     } catch (error) {
         console.error(error);
-        for (const control of [...catalog, showWalls, wallColor, wallpaperButton, arScale, floorSelect, preview]) control.disabled = false;
+        for (const control of [...catalog, wallColor, wallpaperButton, arScale, floorSelect, preview]) control.disabled = false;
         wallColor.disabled = !activeFloor.wallMaterials.size || Boolean(activeFloor.wallpaper.id);
         updateControls('プレビューを作成できませんでした。');
     }
@@ -923,7 +918,7 @@ document.querySelector('#back').addEventListener('click', () => {
     drag = null;
     result.hidden = true;
     resize();
-    for (const control of [...catalog, showWalls, wallColor, wallpaperButton, arScale, floorSelect, preview]) control.disabled = false;
+    for (const control of [...catalog, wallColor, wallpaperButton, arScale, floorSelect, preview]) control.disabled = false;
     wallColor.disabled = !activeFloor.wallMaterials.size || Boolean(activeFloor.wallpaper.id);
     updateControls('編集に戻りました。');
 });
