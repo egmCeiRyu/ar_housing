@@ -1,0 +1,7 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');const {stripTypeScriptTypes}=require('node:module');
+(async()=>{const code=stripTypeScriptTypes(fs.readFileSync('supabase/functions/manage-assets/index.ts','utf8').replace(/import[\s\S]*?from\s+["'][^"']+["'];/g,''));
+let handler,saved,updates=0;const id='00000000-0000-4000-8000-000000000001';
+const query={select(){return this},eq(){return this},in(key,values){assert.equal(key,'status');assert.equal(values.join(','),'active,inactive');return this},update(value){saved=value;updates++;return this},async single(){return{data:{id,status:'active'},error:null}}};
+vm.runInNewContext(code,{Response,console,Deno:{env:{get:key=>key}},serve:fn=>handler=fn,S3Client:class{},createClient:(url,key)=>key==='SUPABASE_ANON_KEY'?{auth:{getUser:async()=>({data:{user:{app_metadata:{role:'admin'}}},error:null})}}:{from:table=>{assert.equal(table,'assets');return query},rpc(){throw Error('No per-project assignment should be written')}}});
+const response=await handler(new Request('https://example.com',{method:'POST',headers:{Authorization:'Bearer admin','Content-Type':'application/json'},body:JSON.stringify({action:'update',id,name:'Test sofa',category_id:'sofa',status:'active',width:2,depth:1,height:1})}));
+assert.equal(response.status,200);assert.equal(updates,1);assert.equal(saved.name,'Test sofa');assert.equal(saved.status,'active');assert.equal('project_ids' in saved,false);console.log('PASS: asset metadata saved without client/project selection or assignment writes');})();

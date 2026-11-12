@@ -12,7 +12,6 @@ function metadata(body: any) {
     demand(typeof body.category_id === 'string' && body.category_id.length <= 40, 'カテゴリーを確認してください。');
     demand(['active','inactive'].includes(body.status), '状態を確認してください。');
     for (const key of ['width','height','depth']) demand(typeof body[key] === 'number' && Number.isFinite(body[key]) && body[key] >= 0 && body[key] < 1000, '寸法を確認してください。');
-    demand(Array.isArray(body.project_ids) && body.project_ids.length <= 200 && body.project_ids.every(uuid), 'プロジェクトを確認してください。');
     return { name: body.name.trim(), category_id: body.category_id, width: body.width, depth: body.depth, height: body.height, status: body.status };
 }
 serve(async req => {
@@ -103,7 +102,7 @@ serve(async req => {
         if (body.action === 'update') {
             demand(['active','inactive'].includes(asset.status),'Asset cannot be edited');
             const meta=metadata(body);
-            const {error}=await db.rpc('save_asset_metadata',{target_id:asset.id,metadata:meta,project_ids:[...new Set(body.project_ids)]}); if(error) throw error;
+            const {error}=await db.from('assets').update({...meta,updated_at:new Date().toISOString()}).eq('id',asset.id).in('status',['active','inactive']).select('id').single(); if(error) throw error;
             return reply({id:asset.id});
         }
         if (body.action === 'delete' || body.action === 'restore') {

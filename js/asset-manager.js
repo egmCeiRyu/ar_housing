@@ -1,6 +1,6 @@
 import { createAssetPreview } from './asset-preview.js?v=1';
 const $ = id => document.getElementById(id);
-const state = { categories: [], projects: [], assets: [], page: 0, count: 0, editing: null, prepared: null, file: null, busy: false, request: 0, previewRequest: 0 };
+const state = { categories: [], assets: [], page: 0, count: 0, editing: null, prepared: null, file: null, busy: false, request: 0, previewRequest: 0 };
 const labels = { active:'有効',inactive:'無効',draft:'未完了',deleted:'削除済み' };
 let searchTimer;
 async function api(body) {
@@ -23,16 +23,6 @@ function setBusy(value) {
     state.busy=value; document.body.classList.toggle('busy',value);
     for(const control of $('asset-form').querySelectorAll('input,select,button')) control.disabled=value;
     if(!value) $('asset-file').disabled=Boolean(state.editing);
-}
-function projects(selected=[]) {
-    const chosen=new Set(selected); $('project-options').replaceChildren();
-    for(const project of state.projects) {
-        const label=document.createElement('label'), checkbox=document.createElement('input');
-        checkbox.type='checkbox'; checkbox.value=project.id; checkbox.checked=chosen.has(project.id);
-        label.append(checkbox,document.createTextNode(project.label||project.name||'名称未設定')); $('project-options').append(label);
-    }
-    if(!state.projects.length) $('project-options').textContent='プロジェクトがありません。';
-    $('project-search').value='';
 }
 async function loadAssets() {
     $('clear-trash').hidden=true;
@@ -73,19 +63,10 @@ async function openAsset(asset=null) {
     $('asset-file').disabled=Boolean(asset); $('delete-asset').hidden=!asset||asset.status==='deleted';
     $('restore-asset').hidden=asset?.status!=='deleted'; $('restore-asset').disabled=asset?.status==='deleted'&&!asset.uploaded_at;
     $('save-asset').hidden=Boolean(asset&&['draft','deleted'].includes(asset.status));
-    projects();
     if(asset?.thumbnail_url) { const image=document.createElement('img'); image.src=asset.thumbnail_url; image.alt=asset.name; $('asset-preview').append(image); }
     if(asset) $('preview-details').textContent=asset.original_filename+' · '+(asset.file_size/1048576).toFixed(1)+' MB';
     if(asset?.status==='draft') $('form-status').textContent='アップロードが完了していません。削除してから、もう一度登録してください。';
     $('asset-dialog').showModal();
-    if(asset) {
-        $('save-asset').disabled=true;
-        const {data,error}=await supabaseClient.from('project_assets').select('project_id').eq('asset_id',asset.id).eq('enabled',true);
-        if(state.editing!==asset||!$('asset-dialog').open) return;
-        if(error) { $('form-status').textContent='プロジェクト設定を読み込めませんでした。画面を開き直してください。'; $('save-asset').disabled=true; return; }
-        projects((data||[]).map(item=>item.project_id));
-        $('save-asset').disabled=false;
-    }
 }
 function closeDialog() { if(state.busy)return; $('asset-dialog').close(); releasePreview(); state.editing=null; }
 $('new-asset').addEventListener('click',()=>openAsset());
@@ -130,8 +111,7 @@ function upload(url,blob,contentType,progress) {
 $('asset-form').addEventListener('submit',async event=>{
     event.preventDefault(); if(state.busy)return;
     if(!state.editing&&!state.prepared) { $('form-status').textContent='先にファイルを選択してください。'; return; }
-    const metadata={name:$('asset-name').value.trim(),category_id:$('asset-category').value,status:$('asset-status').value,
-        project_ids:[...$('project-options').querySelectorAll('input:checked')].map(item=>item.value)};
+    const metadata={name:$('asset-name').value.trim(),category_id:$('asset-category').value,status:$('asset-status').value};
     for(const key of ['width','height','depth']) metadata[key]=Number($('asset-'+key).value)/100;
     setBusy(true); $('form-status').textContent='保存しています…';
     let createdId=null;
@@ -168,7 +148,6 @@ $('restore-asset').addEventListener('click',async()=>{
     catch(error){$('form-status').textContent=error.message;}
     finally{setBusy(false);}
 });
-$('project-search').addEventListener('input',()=>{const query=$('project-search').value.toLowerCase(); for(const label of $('project-options').children)label.hidden=!label.textContent.toLowerCase().includes(query);});
 $('search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{state.page=0;loadAssets();},500);});
 for(const id of ['category-filter','status-filter']) $(id).addEventListener('change',()=>{state.page=0;loadAssets();});
 $('previous-page').addEventListener('click',()=>{if(state.page>0){state.page--;loadAssets();}});
@@ -292,12 +271,9 @@ $('category-delete-form').addEventListener('submit',async event=>{
 });
 try {
     if(await requireAdmin()) {
-        const [categories,properties]=await Promise.all([
-            supabaseClient.from('asset_categories').select('id,name').is('archived_at',null).order('sort_order'),
-            supabaseClient.from('properties').select('id,name,clients(company_name)').order('name').limit(200)
-        ]);
-        if(categories.error||properties.error) throw new Error('ライブラリを初期化できませんでした。管理者に連絡してください。');
-        state.categories=sortCategories(categories.data);state.projects=(properties.data||[]).map(project=>({...project,label:(project.clients?.company_name||'顧客未設定')+' → '+(project.name||'名称未設定')}));
+        const categories=await supabaseClient.from('asset_categories').select('id,name').is('archived_at',null).order('sort_order');
+        if(categories.error) throw new Error('ライブラリを初期化できませんでした。管理者に連絡してください。');
+        state.categories=sortCategories(categories.data);
         for(const category of state.categories) { $('category-filter').append(option(category.id,category.name));$('asset-category').append(option(category.id,category.name)); }
         $('new-asset').disabled=false;
         $('manage-categories').disabled=false;

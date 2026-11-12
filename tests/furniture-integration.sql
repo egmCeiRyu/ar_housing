@@ -11,11 +11,11 @@ BEGIN
  UPDATE public.clients SET furniture_enabled=true WHERE id=client;
  INSERT INTO public.assets(id,name,category_id,asset_type,s3_key,thumbnail_s3_key,original_filename,content_type,file_size,thumbnail_size,status)
  SELECT id,'Rollback test',category,'model','clients/asset-library/qa/'||id||'/original.glb','clients/asset-library/qa/'||id||'/thumb.webp','qa.glb','model/gltf-binary',1,1,status FROM (VALUES(enabled_asset,'active'),(disabled_asset,'inactive')) fixture(id,status);
- INSERT INTO public.project_assets(project_id,asset_id,enabled) VALUES(project,enabled_asset,true),(project,disabled_asset,true);
+ -- No project_assets assignment: active assets must be available globally.
  config=public.get_furniture_config(project_slug);
  IF config IS NULL OR NOT EXISTS(SELECT 1 FROM jsonb_array_elements(config->'assets') a WHERE a->>'id'=enabled_asset::text) OR EXISTS(SELECT 1 FROM jsonb_array_elements(config->'assets') a WHERE a->>'id'=disabled_asset::text) THEN RAISE EXCEPTION 'Asset visibility failed'; END IF;
- UPDATE public.project_assets SET enabled=false WHERE project_id=project AND asset_id=enabled_asset;
- IF EXISTS(SELECT 1 FROM jsonb_array_elements(public.get_furniture_config(project_slug)->'assets') a WHERE a->>'id'=enabled_asset::text) THEN RAISE EXCEPTION 'Unassigned asset exposed'; END IF;
+ UPDATE public.assets SET status='deleted' WHERE id=enabled_asset;
+ IF EXISTS(SELECT 1 FROM jsonb_array_elements(public.get_furniture_config(project_slug)->'assets') a WHERE a->>'id'=enabled_asset::text) THEN RAISE EXCEPTION 'Deleted asset exposed'; END IF;
  UPDATE public.properties SET status='inactive' WHERE id=project;
  IF public.get_furniture_config(project_slug) IS NOT NULL THEN RAISE EXCEPTION 'Inactive project exposed'; END IF;
  UPDATE public.properties SET status='active',furniture_floors='[]' WHERE id=project;
@@ -37,4 +37,4 @@ SELECT set_config('request.jwt.claims','{"app_metadata":{"role":"admin"}}',true)
 UPDATE furniture_permission_test SET furniture_enabled=true,furniture_floors='[{"name":"1階","url":"https://example.com/a.glb"}]';
 RESET ROLE;
 ROLLBACK;
-SELECT 'PASS: visibility, asset assignment and admin-only settings; all changes rolled back' AS result;
+SELECT 'PASS: global active library, disabled/deleted exclusions and admin-only settings; all changes rolled back' AS result;
