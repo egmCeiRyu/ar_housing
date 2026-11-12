@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QRIE · 家具配置エディター</title>
-<link rel="stylesheet" href="css/furniture-editor.css?v=categories">
+<link rel="stylesheet" href="css/furniture-editor.css?v=floor-toolbar">
 <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
 <script type="module" src="./vendor/model-viewer/dist/model-viewer.min.js"></script>
 
@@ -15,12 +15,7 @@
 <main>
 <aside>
 <h1>家具を配置する</h1>
-<label>階数
-<select id="floor-select">
-<option value="0">1階</option>
-<option value="1">2階</option>
-</select>
-</label>
+
 <p>家具を床にドラッグするか、家具を選んで配置したい場所をタップしてください。空いている場所をドラッグすると視点を回転できます。</p>
 <div class="catalog" aria-label="家具カテゴリー">
 
@@ -42,6 +37,12 @@
 <button id="preview" class="primary">配置を確認</button>
 </aside>
 <section class="workspace" aria-label="3Dエディター">
+<div class="floor-toolbar"><label>階数
+<select id="floor-select">
+<option value="0">1階</option>
+<option value="1">2階</option>
+</select>
+</label></div>
 <div id="stage">
 <p id="stage-notice" role="status">3Dモデルを読み込んでいます…</p>
 <div id="size-flag" aria-live="polite" hidden></div>
