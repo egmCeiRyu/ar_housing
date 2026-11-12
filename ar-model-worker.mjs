@@ -1,3 +1,4 @@
+import { houseModelAssets } from "./js/house-model-assets.mjs";
 const JSON_CHUNK = 0x4e4f534a;
 const MAX_JSON_BYTES = 8 * 1024 * 1024;
 
@@ -107,7 +108,10 @@ export default {
 
             const headers = { "Content-Type": "model/gltf-binary", "Cache-Control": "private, no-store" };
             if (request.method === "HEAD") return new Response(null, { headers });
-            const asset = await fetch(source, { redirect: "manual" });
+            const optimized = houseModelAssets(slug, property.glb_url);
+            const asset = optimized
+                ? await env.ASSETS.fetch(new Request(new URL(optimized.native, url), { method: "GET" }))
+                : await fetch(source, { redirect: "manual" });
             if (!asset.ok || !asset.body) throw new Error("Model download failed");
             return new Response(await scaleGlb(asset.body, Number(percent) / 100), { headers });
         } catch (error) {

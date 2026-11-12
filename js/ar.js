@@ -54,6 +54,15 @@ async function loadAR() {
         return;
     }
 
+    let displayModelUrl = project.glb_url;
+    try {
+        const { houseModelAssets } = await import("./house-model-assets.mjs?v=20261112-atlas-alpha");
+        const assets = houseModelAssets(project.slug, project.glb_url);
+        if (assets) {
+            // Android Scene Viewer needs the PNG/JPEG variant; other viewers decode WebP.
+            displayModelUrl = /Android/i.test(navigator.userAgent) ? assets.native : assets.web;
+        }
+    } catch (error) { console.warn("Optimized model unavailable", error); }
     currentProject = project;
     void loadFurnitureEntry(project.slug);
 
@@ -67,9 +76,8 @@ async function loadAR() {
 
     viewer.addEventListener("load", async () => {
         try {
-            const { createHousePreview } = await import("./house-preview.js?v=20261112-sun-brighter");
-            housePreview = await createHousePreview(project.glb_url);
-            viewer.classList.add("directional-preview-ready");
+            const { createHousePreview } = await import("./house-preview.js?v=20261112-single-scene");
+            housePreview = await createHousePreview(viewer);
         } catch (error) { console.error("Directional preview unavailable", error); }
 
         loading.style.display = "none";
@@ -88,10 +96,15 @@ async function loadAR() {
     viewer.addEventListener("error", ({ detail }) => {
         console.error("QRIE model-viewer error:", detail);
         if (detail?.type === "loadfailure") {
+            if (displayModelUrl !== project.glb_url) {
+                displayModelUrl = project.glb_url;
+                viewer.setAttribute("src", displayModelUrl);
+                return;
+            }
             loading.innerText = "3Dモデルを読み込めませんでした。";
         }
     });
-    viewer.setAttribute("src", project.glb_url);
+    viewer.setAttribute("src", displayModelUrl);
 }
 
 async function loadClientEmail(project) {
@@ -258,7 +271,7 @@ function validateMaterials() {
 }
 
 function applyMaterialColor(materialName, colorCode) {
-    housePreview?.setColor(materialName, colorCode);
+    housePreview?.refresh();
 
     const model = viewer.model;
 
