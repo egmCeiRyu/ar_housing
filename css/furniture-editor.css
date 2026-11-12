@@ -127,3 +127,8 @@ select { min-height: 44px; padding: 6px 10px; font: inherit; border: 1px solid #
 .wall-scale-row label{margin:0;gap:6px;white-space:nowrap;font-size:.85rem;}
 .wall-scale-row select{min-width:0;padding-inline:5px;}
 .wall-scale-row input[type="color"]{width:40px;flex-shrink:0;}
+
+.editor-help{width:min(440px,calc(100% - 32px));max-height:85dvh;overflow:auto;padding:24px;border:1px solid #ccd7e3;background:#fff;color:#142e54;}
+.editor-help::backdrop{background:rgb(15 30 50 / 40%);}
+.editor-help h2{margin:0 0 16px;font-size:1.2rem;}
+.editor-help p{line-height:1.8;margin:0;}

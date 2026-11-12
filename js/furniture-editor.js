@@ -9,6 +9,9 @@ const { data: configuration, error: configurationError } = await supabaseClient.
 if (configurationError) throw new Error('家具の設定を読み込めませんでした。');
 if (!configuration) throw new Error('このプロジェクトでは家具モードを利用できません。');
 const config = furnitureCatalog(configuration);
+const helpDialog = document.querySelector('#editor-help');
+helpDialog.querySelector('button').addEventListener('click', () => helpDialog.close());
+helpDialog.showModal();
 const wholeHouse = new URL('ar.html', document.baseURI); wholeHouse.searchParams.set('slug', slug);
 document.querySelector('#whole-house').href = wholeHouse.href;
 const stage = document.querySelector('#stage');

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QRIE · 家具配置エディター</title>
-<link rel="stylesheet" href="css/furniture-editor.css?v=wall-scale-row">
+<link rel="stylesheet" href="css/furniture-editor.css?v=welcome-help">
 <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
 <script type="module" src="./vendor/model-viewer/dist/model-viewer.min.js"></script>
 
@@ -16,7 +16,7 @@
 <aside>
 <h1>家具を配置する</h1>
 
-<p>家具を床にドラッグするか、家具を選んで配置したい場所をタップしてください。空いている場所をドラッグすると視点を回転できます。</p>
+
 <div class="catalog" aria-label="家具カテゴリー">
 
 </div>
@@ -70,12 +70,13 @@
         <button id="wallpaper-apply" type="button" class="primary">適用</button>
     </div>
 </section>
+<dialog id="editor-help" class="editor-help" aria-labelledby="editor-help-title"><h2 id="editor-help-title">家具の配置方法</h2><p>家具を床にドラッグするか、家具を選んで配置したい場所をタップしてください。空いている場所をドラッグすると視点を回転できます。</p><button type="button" class="primary">はじめる</button></dialog>
 <script>
 const notice = document.getElementById('stage-notice');
 if (location.protocol === 'file:') {
     notice.textContent = '3Dモデルを表示するには、Abrir QRIE.cmd を起動してください。';
 } else {
-    import('./js/furniture-editor.js?v=no-exterior-toggle').then(() => notice.remove()).catch(error => {
+    import('./js/furniture-editor.js?v=welcome-help').then(() => notice.remove()).catch(error => {
         console.error(error);
         notice.textContent = error.message || '3Dモデルを読み込めませんでした。';
     });
