@@ -75,18 +75,6 @@ export async function scaleGlb(body, scale) {
     }
 }
 
-export async function fetchLightVariant(request, env, slug, sourceUrl) {
-    const manifestUrl = new URL("/models/ar-variants.json", request.url);
-    const manifest = await env.ASSETS.fetch(new Request(manifestUrl));
-    if (!manifest.ok) return null;
-    const entry = (await manifest.json())[slug];
-    if (!entry || entry.sourceUrl !== sourceUrl || typeof entry.light !== "string") return null;
-    const assetUrl = new URL(entry.light, manifestUrl);
-    if (assetUrl.origin !== manifestUrl.origin || !assetUrl.pathname.startsWith("/models/") || !assetUrl.pathname.endsWith(".glb")) return null;
-    const asset = await env.ASSETS.fetch(new Request(assetUrl));
-    if (!asset.ok) throw new Error("Light model download failed");
-    return asset;
-}
 export default {
     async fetch(request, env) {
         const url = new URL(request.url);
@@ -119,9 +107,7 @@ export default {
 
             const headers = { "Content-Type": "model/gltf-binary", "Cache-Control": "private, no-store" };
             if (request.method === "HEAD") return new Response(null, { headers });
-            const light = url.searchParams.get("quality") === "light"
-                ? await fetchLightVariant(request, env, slug, property.glb_url) : null;
-            const asset = light || await fetch(source, { redirect: "manual" });
+            const asset = await fetch(source, { redirect: "manual" });
             if (!asset.ok || !asset.body) throw new Error("Model download failed");
             return new Response(await scaleGlb(asset.body, Number(percent) / 100), { headers });
         } catch (error) {

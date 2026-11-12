@@ -8,13 +8,12 @@
 
 <script type="module" src="https://unpkg.com/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
 
-<link rel="stylesheet" href="css/ar.css?v=20261112-compact-quality">
+<link rel="stylesheet" href="css/ar.css?v=20261112-preview-above-controls">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
-<script defer src="js/viewer-quality.js?v=20261112-light-mode"></script>
-<script defer src="js/ar.js?v=20261112-light-mode"></script>
+<script defer src="js/ar.js?v=20261112-direct-ar-sun-restored"></script>
 
 </head>
 
@@ -52,7 +51,6 @@
 
 
 <div id="viewerControls">
-
     <div id="colorBar"></div>
     <div id="arActions">
         <label for="arScale">縮尺</label>
@@ -68,13 +66,6 @@
             <option value="0.45">90%</option>
             <option value="1">100%（実寸大）</option>
         </select>
-        <span id="qualityControls" hidden>
-            <label for="viewerQuality">Quality</label>
-            <select id="viewerQuality" disabled>
-                <option value="light">Low quality</option>
-                <option value="full">High</option>
-            </select>
-        </span>
         <button id="openAR" type="button" disabled>ARで見る</button>
     </div>
 </div>
