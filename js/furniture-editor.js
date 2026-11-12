@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-import { furnitureCatalog } from './furniture-config.js?v=categories';
+import { furnitureCatalog } from './furniture-config.js?v=tvbench-floor';
 import { createFurnitureMenu } from './furniture-menu.js?v=1';
 const slug = new URLSearchParams(location.search).get('slug');
 const { data: configuration, error: configurationError } = await supabaseClient.rpc('get_furniture_config', { project_slug: slug || '' });
