@@ -1,5 +1,5 @@
 // Keep the generated USDZ alive while iOS hands it to Quick Look.
-// Opening requires a fresh tap after asynchronous conversion has completed.
+// Reuse a validated package, and open it automatically after conversion.
 class QRIEQuickLook {
     constructor({ viewer, button, scaleControl, status, fetchFile = fetch, revoke = URL.revokeObjectURL.bind(URL) }) {
         Object.assign(this, { viewer, button, scaleControl, status, fetchFile, revoke });
@@ -56,8 +56,10 @@ class QRIEQuickLook {
             this.readyKey = key;
             if (previous) this.revoke(previous);
             console.info("QRIE USDZ ready:", { bytes: file.size });
-            this.button.textContent = "ARを開く";
-            this.status.textContent = "準備ができました。「ARを開く」をタップしてください。";
+            this.button.textContent = "ARで見る";
+            this.status.textContent = "";
+            this.anchor.href = `${this.url}#allowsContentScaling=0`;
+            this.anchor.click();
         } catch (error) {
             console.error("QRIE Quick Look preparation failed:", error);
             this.readyKey = null;
