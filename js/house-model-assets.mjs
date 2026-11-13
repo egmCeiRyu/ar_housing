@@ -1,9 +1,9 @@
 // Apply only to this exact uploaded model; a new Blender upload uses its own source.
-const source = "https://ar-housing-platform-418384447723-ap-northeast-1-an.s3.ap-northeast-1.amazonaws.com/clients/client_001/project_001/house.glb?v=d1bd37be02c7";
+const source = "https://ar-housing-platform-418384447723-ap-northeast-1-an.s3.ap-northeast-1.amazonaws.com/clients/client_001/project_001/house.glb?v=90c49fd6f40c";
 export function houseModelAssets(slug, sourceUrl) {
     if (slug !== "house01" || sourceUrl !== source) return null;
     return {
-        web: "/models/house01/atlas-alpha-webp.glb?v=extrude1",
-        native: "/models/house01/atlas-alpha-native.glb?v=extrude1"
+        web: "/models/house01/atlas-alpha-webp.glb?v=20261113-baked1",
+        native: "/models/house01/atlas-alpha-native.glb?v=20261113-baked1"
     };
 }
