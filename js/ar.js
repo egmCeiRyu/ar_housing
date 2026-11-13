@@ -56,7 +56,7 @@ async function loadAR() {
 
     let displayModelUrl = project.glb_url;
     try {
-        const { houseModelAssets } = await import("./house-model-assets.mjs?v=20261113-v1414");
+        const { houseModelAssets } = await import("./house-model-assets.mjs?v=20261113-v1432");
         const assets = houseModelAssets(project.slug, project.glb_url);
         if (assets) {
             // Android Scene Viewer needs the PNG/JPEG variant; other viewers decode WebP.
